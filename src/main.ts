@@ -13,6 +13,7 @@ import { JobDetailsComponent } from './app/components/job-details/job-details.co
 import { ApplicationComponent } from './app/components/application/application.component';
 import { EmployerDashboardComponent } from './app/components/employer-dashboard/employer-dashboard.component';
 import { JobPostingComponent } from './app/components/job-posting/job-posting.component';
+import { RoleGuard } from './app/guards/role.guard';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -21,12 +22,12 @@ bootstrapApplication(AppComponent, {
       { path: '', component: HomeComponent },
       { path: 'register', component: RegistrationComponent },
       { path: 'login', component: LoginComponent },
-      { path: 'dashboard', component: DashboardComponent },
       { path: 'job-list', component: JobListComponent },
       { path: 'job-details/:id', component: JobDetailsComponent },
       { path: 'application', component: ApplicationComponent },
-      { path: 'employer-dashboard', component: EmployerDashboardComponent },
       { path: 'job-posting', component: JobPostingComponent },
+      { path: 'dashboard', component: DashboardComponent, data: { expectedRole: 'student' }, canActivate: [RoleGuard] },
+      { path: 'employer-dashboard', component: EmployerDashboardComponent, data: { expectedRole: 'employer' }, canActivate: [RoleGuard] }
       // Other routes as needed.
     ])
   ]
