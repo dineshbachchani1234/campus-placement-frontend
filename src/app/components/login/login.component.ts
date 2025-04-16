@@ -31,7 +31,7 @@ export class LoginComponent {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
@@ -39,14 +39,28 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       this.apiService.loginUser(this.loginForm.value).subscribe({
-        next: response => {
+        next: (response) => {
           console.log('Login successful:', response);
-          // Navigate to the Dashboard upon successful login.
-          this.router.navigate(['/dashboard']);
+  
+          // Save token and user info to localStorage
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('username', response.username);
+          localStorage.setItem('firstName', response.firstName);
+          localStorage.setItem('lastName', response.lastName);
+          localStorage.setItem('role', response.role);
+          console.log('ROLE:', response.role);
+          // Navigate based on role
+          if (response.role === 'STUDENT') {
+            this.router.navigate(['/dashboard']);
+          } else if (response.role === 'RECRUITER') {
+            this.router.navigate(['/employer-dashboard']);
+          } else if (response.role === 'ADMIN') {
+            this.router.navigate(['/admin']);
+          }
         },
-        error: err => {
+        error: (err) => {
           console.error('Login error:', err);
-          // You can show an error message to the user using Angular Material's snack bar, for example.
+          // TODO: show a proper error message with a snackbar or dialog
         }
       });
     } else {

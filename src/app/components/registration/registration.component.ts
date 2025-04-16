@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import {MatRadioModule} from '@angular/material/radio';
 
 @Component({
   selector: 'app-registration',
@@ -17,7 +18,8 @@ import { ApiService } from '../../services/api.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatRadioModule
   ],
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
@@ -48,15 +50,26 @@ export class RegistrationComponent {
 
   onSubmit() {
     if (this.registrationForm.valid) {
-      this.apiService.registerUser(this.registrationForm.value).subscribe({
+      const formValues = this.registrationForm.value;
+  
+      // Align fields with backend DTO
+      const payload = {
+        id: 0,
+        first_name: formValues.firstName,
+        last_name: formValues.lastName,
+        username: formValues.email,
+        password: formValues.password,
+        role: formValues.role.toUpperCase() // e.g., STUDENT, RECRUITER
+      };
+  
+      this.apiService.registerUser(payload).subscribe({
         next: response => {
           console.log('Registration successful:', response);
-          // Navigate to the Login page on success.
           this.router.navigate(['/login']);
         },
         error: err => {
           console.error('Registration error:', err);
-          // You can use a snack bar or dialog to show errors.
+          // Show user-friendly error (snackbar/dialog/etc.)
         }
       });
     } else {

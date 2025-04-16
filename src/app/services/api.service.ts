@@ -11,14 +11,12 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // API call for user registration
-  registerUser(userData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, userData);
+  registerUser(data: any): Observable<any> {
+    return this.http.post('http://localhost:8080/api/auth/register', data);
   }
 
-  // API call for user login
-  loginUser(credentials: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, credentials);
+  loginUser(data: any): Observable<any> {
+    return this.http.post('http://localhost:8080/api/auth/login', data);
   }
 
   // API call for fetching list of jobs

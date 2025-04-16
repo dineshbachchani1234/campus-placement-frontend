@@ -33,6 +33,17 @@
             Password is required.
           </mat-error>
         </mat-form-field>
+
+        <mat-radio-group formControlName="role" class="full-width margin-top">
+          <mat-label>User Role</mat-label>
+          <mat-radio-button value="STUDENT">Student</mat-radio-button>
+          <mat-radio-button value="RECRUITER">Employer</mat-radio-button>
+          <mat-radio-button value="ADMIN">Admin</mat-radio-button>
+        </mat-radio-group>
+        
+        <mat-error *ngIf="registrationForm.get('role')?.invalid && registrationForm.get('role')?.touched">
+          Role is required.
+        </mat-error>
   
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Confirm Password</mat-label>

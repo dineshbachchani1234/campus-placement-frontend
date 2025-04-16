@@ -4,8 +4,8 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Email</mat-label>
-          <input matInput id="email" formControlName="email" type="email" />
-          <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <input matInput id="email" formControlName="username" type="email" />
+          <mat-error *ngIf="loginForm.get('username')?.invalid && loginForm.get('email')?.touched">
             A valid email is required.
           </mat-error>
         </mat-form-field>
