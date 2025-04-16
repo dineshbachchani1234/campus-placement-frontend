@@ -26,7 +26,7 @@ bootstrapApplication(AppComponent, {
       { path: 'job-details/:id', component: JobDetailsComponent },
       { path: 'application', component: ApplicationComponent },
       { path: 'job-posting', component: JobPostingComponent },
-      { path: 'dashboard', component: DashboardComponent, data: { expectedRole: 'student' }, canActivate: [RoleGuard] },
+      { path: 'dashboard', component: DashboardComponent},
       { path: 'employer-dashboard', component: EmployerDashboardComponent, data: { expectedRole: 'employer' }, canActivate: [RoleGuard] }
       // Other routes as needed.
     ])
