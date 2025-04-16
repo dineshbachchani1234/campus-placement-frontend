@@ -16,7 +16,6 @@ export interface JobListing {
   deadline: string;
   postDate: string;
   isActive: boolean;
-  companyId: number;
   company?: Company;
   applications?: Application[];
 }

@@ -1,0 +1,100 @@
+.dashboard-card {
+  margin: 16px;
+  padding-bottom: 16px;
+}
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.loading-text {
+  margin-top: 16px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  color: rgba(0, 0, 0, 0.38);
+  margin-bottom: 16px;
+}
+
+.table-container {
+  overflow-x: auto;
+  margin: 0 16px;
+}
+
+.jobs-table {
+  width: 100%;
+}
+
+.applicant-count {
+  text-align: center;
+}
+
+.applicant-badge {
+  display: inline-block;
+  min-width: 24px;
+  height: 24px;
+  line-height: 24px;
+  border-radius: 12px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.87);
+  padding: 0 8px;
+}
+
+.has-applicants {
+  background-color: #3f51b5;
+  color: white;
+}
+
+/* Add some spacing between columns */
+th.mat-header-cell, td.mat-cell {
+  padding: 0 16px;
+}
+
+th.mat-header-cell:first-of-type, 
+td.mat-cell:first-of-type {
+  padding-left: 24px;
+}
+
+th.mat-header-cell:last-of-type, 
+td.mat-cell:last-of-type {
+  padding-right: 24px;
+}
+
+.mat-column-title {
+  min-width: 150px;
+}
+
+.mat-column-jobType {
+  min-width: 100px;
+}
+
+.mat-column-salary {
+  min-width: 100px;
+}
+
+.mat-column-applicantCount {
+  min-width: 80px;
+}
+
+.mat-column-actions {
+  min-width: 80px;
+  text-align: center;
+}

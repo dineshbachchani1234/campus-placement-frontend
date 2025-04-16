@@ -1,6 +1,7 @@
 <div class="dashboard-container">
   <h1>Student Dashboard</h1>
-  
+    
+  <!-- Applications Section -->
   <section class="dashboard-section">
     <h2>My Applications</h2>
     <mat-card *ngIf="applications.length === 0">
@@ -20,7 +21,7 @@
         <!-- Company Column -->
         <ng-container matColumnDef="companyName">
           <th mat-header-cell *matHeaderCellDef>Company</th>
-          <td mat-cell *matCellDef="let application">{{application.job?.company?.name || 'N/A'}}</td>
+          <td mat-cell *matCellDef="let application">{{application.job?.company?.companyName || 'N/A'}}</td>
         </ng-container>
         
         <!-- Job Type Column -->
@@ -38,7 +39,11 @@
         <!-- Status Column -->
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let application">{{formatStatus(application.status)}}</td>
+          <td mat-cell *matCellDef="let application">
+            <span class="status-badge" [ngClass]="'application-status-' + application.status?.toLowerCase()">
+              {{formatStatus(application.status)}}
+            </span>
+          </td>
         </ng-container>
         
         <!-- Application Date Column -->
@@ -59,6 +64,7 @@
     </div>
   </section>
   
+  <!-- Interviews Section -->
   <section class="dashboard-section">
     <h2>My Interviews</h2>
     <mat-card *ngIf="interviews.length === 0">
@@ -78,25 +84,52 @@
         <!-- Company Column -->
         <ng-container matColumnDef="companyName">
           <th mat-header-cell *matHeaderCellDef>Company</th>
-          <td mat-cell *matCellDef="let interview">{{interview.application?.job?.company?.name || 'N/A'}}</td>
+          <td mat-cell *matCellDef="let interview">{{interview.application?.job?.company?.companyName || 'N/A'}}</td>
         </ng-container>
         
         <!-- Interview Date Column -->
         <ng-container matColumnDef="interviewDate">
           <th mat-header-cell *matHeaderCellDef>Interview Date</th>
-          <td mat-cell *matCellDef="let interview">{{formatDate(interview.interviewDate)}}</td>
+          <td mat-cell *matCellDef="let interview">{{formatDateTime(interview.interviewDate)}}</td>
         </ng-container>
         
-        <!-- Feedback Column -->
-        <ng-container matColumnDef="feedback">
-          <th mat-header-cell *matHeaderCellDef>Feedback</th>
-          <td mat-cell *matCellDef="let interview">{{interview.feedback || 'No feedback yet'}}</td>
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let interview">
+            <span class="status-chip" [ngClass]="getStatusClass(interview.status)">
+              {{formatStatus(interview.status)}}
+            </span>
+          </td>
         </ng-container>
         
         <!-- Result Column -->
         <ng-container matColumnDef="result">
           <th mat-header-cell *matHeaderCellDef>Result</th>
-          <td mat-cell *matCellDef="let interview">{{interview.result || 'Pending'}}</td>
+          <td mat-cell *matCellDef="let interview">
+            <span class="result-chip" [ngClass]="getResultClass(interview.result)">
+              {{interview.result ? formatStatus(interview.result) : 'Pending'}}
+            </span>
+          </td>
+        </ng-container>
+        
+        <!-- Feedback Column -->
+        <ng-container matColumnDef="feedback">
+          <th mat-header-cell *matHeaderCellDef>Feedback</th>
+          <td mat-cell *matCellDef="let interview">
+            <span *ngIf="interview.feedback" class="feedback-text">{{interview.feedback}}</span>
+            <span *ngIf="!interview.feedback" class="no-feedback">No feedback yet</span>
+          </td>
+        </ng-container>
+        
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let interview">
+            <button *ngIf="interview.status === InterviewStatus.COMPLETED" mat-button color="primary" class="action-button">
+              Add Experience
+            </button>
+          </td>
         </ng-container>
         
         <tr mat-header-row *matHeaderRowDef="displayedColumnsInterviews"></tr>
@@ -105,6 +138,7 @@
     </div>
   </section>
   
+  <!-- Career Fairs Section -->
   <section class="dashboard-section">
     <h2>Upcoming Career Fairs</h2>
     <mat-card *ngIf="careerFairs.length === 0">
@@ -146,4 +180,56 @@
       </table>
     </div>
   </section>
+
+  <!-- ... previous sections ... -->
+
+<section class="dashboard-section">
+  <h2>Available Jobs</h2>
+  <mat-card *ngIf="jobs.length === 0">
+    <mat-card-content>
+      <p>No jobs are currently available.</p>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="jobs.length > 0">
+    <table mat-table [dataSource]="jobs" class="mat-elevation-z8">
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Title</th>
+        <td mat-cell *matCellDef="let job">{{ job.title }}</td>
+      </ng-container>
+
+      <!-- Job Type Column -->
+      <ng-container matColumnDef="jobType">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let job">{{ formatJobType(job.jobType) }}</td>
+      </ng-container>
+
+      <!-- Salary Column -->
+      <ng-container matColumnDef="salary">
+        <th mat-header-cell *matHeaderCellDef>Salary</th>
+        <td mat-cell *matCellDef="let job">{{ formatSalary(job.salary) }}</td>
+      </ng-container>
+
+      <!-- Action Column -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let job">
+          <button
+            mat-raised-button
+            [color]="job.hasApplied ? 'accent' : 'primary'"
+            [disabled]="job.hasApplied"
+            (click)="applyToJob(job)">
+            {{ job.hasApplied ? 'Applied' : 'Apply' }}
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsJobs"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsJobs;"></tr>
+    </table>
+  </div>
+</section>
+
 </div>

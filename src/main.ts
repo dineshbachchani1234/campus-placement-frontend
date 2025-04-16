@@ -11,7 +11,7 @@ import { DashboardComponent } from './app/components/dashboard/dashboard.compone
 import { JobListComponent } from './app/components/job-list/job-list.component';
 import { JobDetailsComponent } from './app/components/job-details/job-details.component';
 import { ApplicationComponent } from './app/components/application/application.component';
-import { EmployerDashboardComponent } from './app/components/employer-dashboard/employer-dashboard.component';
+import { RecruiterDashboardComponent } from './app/components/RecruiterDashboardComponent/recruiter-dashboard.component';
 import { JobPostingComponent } from './app/components/job-posting/job-posting.component';
 import { RoleGuard } from './app/guards/role.guard';
 
@@ -28,7 +28,7 @@ bootstrapApplication(AppComponent, {
       { path: 'application', component: ApplicationComponent },
       { path: 'job-posting', component: JobPostingComponent },
       { path: 'dashboard', component: DashboardComponent},
-      { path: 'employer-dashboard', component: EmployerDashboardComponent, data: { expectedRole: 'employer' }, canActivate: [RoleGuard] }
+      { path: 'recruiter-dashboard', component: RecruiterDashboardComponent }
       // Other routes as needed.
     ])
   ]

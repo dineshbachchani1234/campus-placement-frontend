@@ -69,7 +69,7 @@ export class LoginComponent {
           if (response.role === 'STUDENT') {
             this.router.navigate(['/dashboard']);
           } else if (response.role === 'RECRUITER') {
-            this.router.navigate(['/employer-dashboard']);
+            this.router.navigate(['/recruiter-dashboard']);
           } else if (response.role === 'ADMIN') {
             this.router.navigate(['/admin']);
           }
