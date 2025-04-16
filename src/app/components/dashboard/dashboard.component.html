@@ -1,75 +1,149 @@
 <div class="dashboard-container">
-<h1> hello from dashboard</h1>
-  <!-- Applications Section -->
-  <mat-card class="section-card" *ngIf="careerFairs!.length > 0">
-    <mat-card-title>Your Applications</mat-card-title>
-    <mat-card-content>
-      <table mat-table [dataSource]="applications" class="mat-elevation-z2 full-width-table">
-        <!-- Define columns -->
-        <ng-container matColumnDef="jobId">
-          <th mat-header-cell *matHeaderCellDef> Job ID </th>
-          <td mat-cell *matCellDef="let application">{{ application.jobId }}</td>
-        </ng-container>
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef> Status </th>
-          <td mat-cell *matCellDef="let application">{{ application.status }}</td>
-        </ng-container>
-        <ng-container matColumnDef="applicationDate">
-          <th mat-header-cell *matHeaderCellDef> Applied On </th>
-          <td mat-cell *matCellDef="let application">{{ application.applicationDate | date }}</td>
-        </ng-container>
+  <h1>Student Dashboard</h1>
   
+  <section class="dashboard-section">
+    <h2>My Applications</h2>
+    <mat-card *ngIf="applications.length === 0">
+      <mat-card-content>
+        <p>You haven't applied to any jobs yet.</p>
+      </mat-card-content>
+    </mat-card>
+    
+    <div *ngIf="applications.length > 0">
+      <table mat-table [dataSource]="applications" class="mat-elevation-z8">
+        <!-- Job Title Column -->
+        <ng-container matColumnDef="jobTitle">
+          <th mat-header-cell *matHeaderCellDef>Job Title</th>
+          <td mat-cell *matCellDef="let application">{{application.job?.title || 'N/A'}}</td>
+        </ng-container>
+        
+        <!-- Company Column -->
+        <ng-container matColumnDef="companyName">
+          <th mat-header-cell *matHeaderCellDef>Company</th>
+          <td mat-cell *matCellDef="let application">{{application.job?.company?.name || 'N/A'}}</td>
+        </ng-container>
+        
+        <!-- Job Type Column -->
+        <ng-container matColumnDef="jobType">
+          <th mat-header-cell *matHeaderCellDef>Job Type</th>
+          <td mat-cell *matCellDef="let application">{{formatJobType(application.job?.jobType)}}</td>
+        </ng-container>
+        
+        <!-- Salary Column -->
+        <ng-container matColumnDef="salary">
+          <th mat-header-cell *matHeaderCellDef>Salary</th>
+          <td mat-cell *matCellDef="let application">{{formatSalary(application.job?.salary)}}</td>
+        </ng-container>
+        
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let application">{{formatStatus(application.status)}}</td>
+        </ng-container>
+        
+        <!-- Application Date Column -->
+        <ng-container matColumnDef="applicationDate">
+          <th mat-header-cell *matHeaderCellDef>Applied On</th>
+          <td mat-cell *matCellDef="let application">{{formatDate(application.applicationDate)}}</td>
+        </ng-container>
+        
+        <!-- Deadline Column -->
+        <ng-container matColumnDef="deadline">
+          <th mat-header-cell *matHeaderCellDef>Deadline</th>
+          <td mat-cell *matCellDef="let application">{{formatDate(application.job?.deadline)}}</td>
+        </ng-container>
+        
         <tr mat-header-row *matHeaderRowDef="displayedColumnsApplications"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsApplications;"></tr>
       </table>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Interviews Section -->
-  <mat-card class="section-card" *ngIf="careerFairs!.length > 0">
-    <mat-card-title>Upcoming Interviews</mat-card-title>
-    <mat-card-content>
-      <table mat-table [dataSource]="interviews" class="mat-elevation-z2 full-width-table">
-        <ng-container matColumnDef="interviewDate">
-          <th mat-header-cell *matHeaderCellDef> Date </th>
-          <td mat-cell *matCellDef="let interview">{{ interview.interviewDate | date }}</td>
-        </ng-container>
-        <ng-container matColumnDef="feedback">
-          <th mat-header-cell *matHeaderCellDef> Feedback </th>
-          <td mat-cell *matCellDef="let interview">{{ interview.feedback }}</td>
-        </ng-container>
-        <ng-container matColumnDef="result">
-          <th mat-header-cell *matHeaderCellDef> Result </th>
-          <td mat-cell *matCellDef="let interview">{{ interview.result }}</td>
-        </ng-container>
+    </div>
+  </section>
   
+  <section class="dashboard-section">
+    <h2>My Interviews</h2>
+    <mat-card *ngIf="interviews.length === 0">
+      <mat-card-content>
+        <p>You don't have any interviews scheduled.</p>
+      </mat-card-content>
+    </mat-card>
+    
+    <div *ngIf="interviews.length > 0">
+      <table mat-table [dataSource]="interviews" class="mat-elevation-z8">
+        <!-- Job Title Column -->
+        <ng-container matColumnDef="jobTitle">
+          <th mat-header-cell *matHeaderCellDef>Job Title</th>
+          <td mat-cell *matCellDef="let interview">{{interview.application?.job?.title || 'N/A'}}</td>
+        </ng-container>
+        
+        <!-- Company Column -->
+        <ng-container matColumnDef="companyName">
+          <th mat-header-cell *matHeaderCellDef>Company</th>
+          <td mat-cell *matCellDef="let interview">{{interview.application?.job?.company?.name || 'N/A'}}</td>
+        </ng-container>
+        
+        <!-- Interview Date Column -->
+        <ng-container matColumnDef="interviewDate">
+          <th mat-header-cell *matHeaderCellDef>Interview Date</th>
+          <td mat-cell *matCellDef="let interview">{{formatDate(interview.interviewDate)}}</td>
+        </ng-container>
+        
+        <!-- Feedback Column -->
+        <ng-container matColumnDef="feedback">
+          <th mat-header-cell *matHeaderCellDef>Feedback</th>
+          <td mat-cell *matCellDef="let interview">{{interview.feedback || 'No feedback yet'}}</td>
+        </ng-container>
+        
+        <!-- Result Column -->
+        <ng-container matColumnDef="result">
+          <th mat-header-cell *matHeaderCellDef>Result</th>
+          <td mat-cell *matCellDef="let interview">{{interview.result || 'Pending'}}</td>
+        </ng-container>
+        
         <tr mat-header-row *matHeaderRowDef="displayedColumnsInterviews"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsInterviews;"></tr>
       </table>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Career Fairs Section -->
-  <mat-card class="section-card" *ngIf="careerFairs!.length > 0">
-    <mat-card-title>Upcoming Career Fairs</mat-card-title>
-    <mat-card-content>
-      <table mat-table [dataSource]="careerFairs" class="mat-elevation-z2 full-width-table">
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef> Title </th>
-          <td mat-cell *matCellDef="let fair">{{ fair.title }}</td>
-        </ng-container>
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef> Date </th>
-          <td mat-cell *matCellDef="let fair">{{ fair.date | date }}</td>
-        </ng-container>
-        <ng-container matColumnDef="location">
-          <th mat-header-cell *matHeaderCellDef> Location </th>
-          <td mat-cell *matCellDef="let fair">{{ fair.location }}</td>
-        </ng-container>
+    </div>
+  </section>
   
+  <section class="dashboard-section">
+    <h2>Upcoming Career Fairs</h2>
+    <mat-card *ngIf="careerFairs.length === 0">
+      <mat-card-content>
+        <p>No upcoming career fairs.</p>
+      </mat-card-content>
+    </mat-card>
+    
+    <div *ngIf="careerFairs.length > 0">
+      <table mat-table [dataSource]="careerFairs" class="mat-elevation-z8">
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let event">{{event.title || 'N/A'}}</td>
+        </ng-container>
+        
+        <!-- Date Column -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let event">{{formatDate(event.date)}}</td>
+        </ng-container>
+        
+        <!-- Location Column -->
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef>Location</th>
+          <td mat-cell *matCellDef="let event">{{event.location || 'TBD'}}</td>
+        </ng-container>
+        
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let event">
+            {{event.description?.length > 50 ? (event.description | slice:0:50) + '...' : (event.description || 'No description')}}
+          </td>
+        </ng-container>
+        
         <tr mat-header-row *matHeaderRowDef="displayedColumnsCareerFairs"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsCareerFairs;"></tr>
       </table>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </section>
 </div>

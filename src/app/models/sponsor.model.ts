@@ -1,8 +1,10 @@
-// Represents a sponsor entity.
+import { CareerFair } from './careerfair.model';
+
 export interface Sponsor {
-    sponsorId: number;
-    name: string;
-    contributionAmount: number;
-    email: string;
-  }
-  
+  sponsorId: number;
+  name: string;
+  email: string;
+  amount: number;
+  eventId: number;
+  careerFair?: CareerFair;
+}

@@ -93,10 +93,9 @@ export class ApiService {
     return this.http.get<CareerFair[]>(`${this.baseUrl}/careerfairs`);
   }
 
-  // Get applications submitted by a particular student.
-  // Expected endpoint: GET /api/students/{studentId}/applications
   getApplicationsByStudent(studentId: string): Observable<Application[]> {
-    return this.http.get<Application[]>(`${this.baseUrl}/students/${studentId}/applications`);
+    // Change this to match your Spring Boot endpoint
+    return this.http.get<Application[]>(`${this.baseUrl}/applications/student/${studentId}`);
   }
 
   // Get interviews scheduled for a particular student.
