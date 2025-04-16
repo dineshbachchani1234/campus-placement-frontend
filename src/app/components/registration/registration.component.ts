@@ -7,7 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
-import {MatRadioModule} from '@angular/material/radio';
+// Optionally import MatSnackBar for feedback
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';  // Import MatSelectModule
+
 
 @Component({
   selector: 'app-registration',
@@ -19,7 +22,8 @@ import {MatRadioModule} from '@angular/material/radio';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    MatRadioModule
+    MatSnackBarModule,
+    MatSelectModule
   ],
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
@@ -30,18 +34,21 @@ export class RegistrationComponent {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
+    // Build the form. The confirmPassword field is for client-side validation only.
     this.registrationForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
-      role: ['student', Validators.required]
+      role: ['STUDENT', Validators.required]  // Updated default value to uppercase
     }, { validators: this.passwordMatchValidator });
   }
 
+  // Custom validator to check that password and confirmPassword match.
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
@@ -50,26 +57,19 @@ export class RegistrationComponent {
 
   onSubmit() {
     if (this.registrationForm.valid) {
-      const formValues = this.registrationForm.value;
-  
-      // Align fields with backend DTO
-      const payload = {
-        id: 0,
-        first_name: formValues.firstName,
-        last_name: formValues.lastName,
-        username: formValues.email,
-        password: formValues.password,
-        role: formValues.role.toUpperCase() // e.g., STUDENT, RECRUITER
-      };
-  
-      this.apiService.registerUser(payload).subscribe({
+      // Prepare the data to send. Exclude confirmPassword.
+      const { confirmPassword, ...registrationData } = this.registrationForm.value;
+      this.apiService.registerUser(registrationData).subscribe({
         next: response => {
           console.log('Registration successful:', response);
+          // Optionally show a success message
+          this.snackBar.open('Registration successful! Please log in.', 'Close', { duration: 3000 });
+          // Navigate to the Login page on success.
           this.router.navigate(['/login']);
         },
         error: err => {
           console.error('Registration error:', err);
-          // Show user-friendly error (snackbar/dialog/etc.)
+          this.snackBar.open('Registration failed. Please try again.', 'Close', { duration: 3000 });
         }
       });
     } else {
