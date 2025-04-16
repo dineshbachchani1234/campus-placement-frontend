@@ -1,8 +1,8 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import {importProvidersFrom } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { AppComponent } from './app/app.component';
 import { HomeComponent } from './app/components/home/home.component';
 import { RegistrationComponent } from './app/components/registration/registration.component';
@@ -18,6 +18,7 @@ import { RoleGuard } from './app/guards/role.guard';
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(HttpClientModule),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     provideRouter([
       { path: '', component: HomeComponent },
       { path: 'register', component: RegistrationComponent },

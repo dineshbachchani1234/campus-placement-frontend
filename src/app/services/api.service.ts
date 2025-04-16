@@ -5,6 +5,9 @@ import { SignupRequest } from '../models/signup-request.model';
 import { MessageResponse } from '../models/message-response.model';
 import { LoginRequest } from '../models/login-request.model';
 import { JwtAuthResponse } from '../models/jwt-auth-response.model';
+import { CareerFair } from '../models/careerfair.model';
+import { Application } from '../models/application.model';
+import { Interview } from '../models/interview.model';
 
 @Injectable({
   providedIn: 'root'
@@ -84,4 +87,22 @@ export class ApiService {
   getCompanies(): Observable<any> {
     return this.http.get(`${this.apiUrl}/companies`);
   }
+
+  getCareerFairs(): Observable<CareerFair[]> {
+    // Example endpoint: GET /api/career-fairs
+    return this.http.get<CareerFair[]>(`${this.baseUrl}/careerfairs`);
+  }
+
+  // Get applications submitted by a particular student.
+  // Expected endpoint: GET /api/students/{studentId}/applications
+  getApplicationsByStudent(studentId: string): Observable<Application[]> {
+    return this.http.get<Application[]>(`${this.baseUrl}/students/${studentId}/applications`);
+  }
+
+  // Get interviews scheduled for a particular student.
+  // Expected endpoint: GET /api/students/{studentId}/interviews
+  getInterviewsByStudent(studentId: string): Observable<Interview[]> {
+    return this.http.get<Interview[]>(`${this.baseUrl}/students/${studentId}/interviews`);
+  }
+
 }
