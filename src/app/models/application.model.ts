@@ -1,10 +1,24 @@
-// Represents a job application submitted by a student.
+import { Student } from './student.model';
+import { JobListing } from './job-listing.model';
+import { Interview } from './interview.model';
+
+export enum ApplicationStatus {
+  PENDING = 'PENDING',
+  SHORTLISTED = 'SHORTLISTED',
+  REJECTED = 'REJECTED',
+  INTERVIEWED = 'INTERVIEWED',
+  OFFERED = 'OFFERED',
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED'
+}
+
 export interface Application {
-    applicationId: number;
-    studentId: number;
-    jobId: number;
-    applicationDate: string; // You can use ISO date string or Date type if you convert accordingly.
-    // Using a union type for status based on your SQL ENUM values:
-    status: 'PENDING' | 'SHORTLISTED' | 'REJECTED' | 'INTERVIEWED' | 'OFFERED' | 'ACCEPTED' | 'DECLINED';
-  }
-  
+  applicationId: number;
+  studentId: number;
+  jobId: number;
+  applicationDate: string;
+  status: ApplicationStatus;
+  student?: Student;
+  job?: JobListing;
+  interviews?: Interview[];
+}

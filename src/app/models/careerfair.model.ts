@@ -1,9 +1,10 @@
-// Represents a career fair event.
+import { Company } from './company.model';
+
 export interface CareerFair {
-    fairId: number;
-    title: string;
-    description: string;
-    date: string;  // ISO date string expected
-    location: string;
-  }
-  
+  eventId: number;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  companies?: Company[];
+}

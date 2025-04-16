@@ -6,7 +6,8 @@ export interface User {
   id: number;
   firstName: string;
   lastName: string;
-  role: 'student' | 'employer' | 'admin';
+  email: string; // Added email property to match backend model
+  role: 'STUDENT' | 'ADMIN' | 'RECRUITER'; // Match the backend enum
   token: string;
 }
 
@@ -18,14 +19,31 @@ export class AuthService {
   public currentUser$: Observable<User | null>;
 
   constructor(private router: Router) {
-    let storedUser = null;
-    // Check if localStorage is available
+    let user = null;
+    // Check if localStorage is available and build user object from individual fields
     if (typeof localStorage !== 'undefined') {
-      storedUser = localStorage.getItem('currentUser');
+      const userId = localStorage.getItem('userId');
+      const email = localStorage.getItem('email');
+      const firstName = localStorage.getItem('firstName') || '';
+      const lastName = localStorage.getItem('lastName') || '';
+      const role = localStorage.getItem('role');
+      const token = localStorage.getItem('token');
+      
+      if (userId && email && role && token) {
+        // Create user object from individual localStorage items
+        user = {
+          id: parseInt(userId),
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          role: role as 'STUDENT' | 'ADMIN' | 'RECRUITER',
+          token: token
+        };
+        console.log('Constructed user from localStorage:', user);
+      }
     }
-    this.currentUserSubject = new BehaviorSubject<User | null>(
-      storedUser ? JSON.parse(storedUser) : null
-    );
+    
+    this.currentUserSubject = new BehaviorSubject<User | null>(user);
     this.currentUser$ = this.currentUserSubject.asObservable();
   }
 
@@ -34,15 +52,31 @@ export class AuthService {
   }
 
   login(user: User) {
+    console.log('Setting user in login:', user);
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      // Store individual properties
+      localStorage.setItem('userId', user.id.toString());
+      localStorage.setItem('firstName', user.firstName);
+      localStorage.setItem('lastName', user.lastName);
+      localStorage.setItem('email', user.email);
+      localStorage.setItem('role', user.role);
+      localStorage.setItem('token', user.token);
+      localStorage.setItem('tokenType', 'Bearer');
+      console.log('User data saved to localStorage');
     }
     this.currentUserSubject.next(user);
   }
 
   logout() {
     if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem('currentUser');
+      // Clear all individual fields
+      localStorage.removeItem('userId');
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('lastName');
+      localStorage.removeItem('email');
+      localStorage.removeItem('role');
+      localStorage.removeItem('token');
+      localStorage.removeItem('tokenType');
     }
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
@@ -53,14 +87,14 @@ export class AuthService {
   }
 
   isStudent(): boolean {
-    return this.currentUser?.role === 'student';
+    return this.currentUser?.role === 'STUDENT';
   }
 
   isEmployer(): boolean {
-    return this.currentUser?.role === 'employer';
+    return this.currentUser?.role === 'RECRUITER'; // Changed from 'employer' to match backend
   }
 
   isAdmin(): boolean {
-    return this.currentUser?.role === 'admin';
+    return this.currentUser?.role === 'ADMIN';
   }
 }
