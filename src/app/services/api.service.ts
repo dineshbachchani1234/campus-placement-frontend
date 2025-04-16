@@ -6,7 +6,7 @@ import { MessageResponse } from '../models/message-response.model';
 import { LoginRequest } from '../models/login-request.model';
 import { JwtAuthResponse } from '../models/jwt-auth-response.model';
 import { CareerFair } from '../models/careerfair.model';
-import { Application } from '../models/application.model';
+import { Application, JobListing } from '../models/application.model';
 import { Interview } from '../models/interview.model';
 
 @Injectable({
@@ -15,6 +15,10 @@ import { Interview } from '../models/interview.model';
 export class ApiService {
   // Update baseUrl to point to your Spring Boot backend
   private baseUrl = 'http://localhost:8080/api';
+
+  private applicationBaseUrl = 'http://localhost:8080/api/applications';
+
+  private recruiterBaseUrl = 'http://localhost:8080/api/jobs';
 
   private apiUrl = 'http://localhost:8080/api';
 
@@ -27,6 +31,20 @@ export class ApiService {
   login(loginRequest: LoginRequest): Observable<JwtAuthResponse> {
     return this.http.post<JwtAuthResponse>(`${this.apiUrl}/auth/login`, loginRequest);
   }
+
+  getJobsByRecruiter(recruiterId: string): Observable<JobListing[]> {
+    return this.http.get<JobListing[]>(
+      `${this.recruiterBaseUrl}/recruiter/${recruiterId}`
+    );
+  }
+
+  getApplicationsByJobId(jobId: string): Observable<Application[]> {
+    return this.http.get<Application[]>(
+      `${this.applicationBaseUrl}/jobs/${jobId}`
+    );
+  }
+
+
 
   // API call for fetching list of jobs
   getJobs(): Observable<any> {
@@ -97,11 +115,20 @@ export class ApiService {
     // Change this to match your Spring Boot endpoint
     return this.http.get<Application[]>(`${this.baseUrl}/applications/student/${studentId}`);
   }
-
-  // Get interviews scheduled for a particular student.
-  // Expected endpoint: GET /api/students/{studentId}/interviews
+  getUpcomingInterviews(): Observable<Interview[]> {
+    return this.http.get<Interview[]>(`${this.baseUrl}/interviews/upcoming`);
+  }
+  
+  // Make sure you also have this method for getting interviews by student
   getInterviewsByStudent(studentId: string): Observable<Interview[]> {
-    return this.http.get<Interview[]>(`${this.baseUrl}/students/${studentId}/interviews`);
+    return this.http.get<Interview[]>(`${this.baseUrl}/interviews/student/${studentId}`);
   }
 
+  getJobById(jobId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/jobs/${jobId}`);
+  }
+  
+  getCompanyById(companyId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/companies/${companyId}`);
+  }
 }
