@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { SignupRequest } from '../models/signup-request.model';
+import { MessageResponse } from '../models/message-response.model';
+import { LoginRequest } from '../models/login-request.model';
+import { JwtAuthResponse } from '../models/jwt-auth-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,14 +13,16 @@ export class ApiService {
   // Update baseUrl to point to your Spring Boot backend
   private baseUrl = 'http://localhost:8080/api';
 
+  private apiUrl = 'http://localhost:8080/api';
+
   constructor(private http: HttpClient) { }
 
-  registerUser(data: any): Observable<any> {
-    return this.http.post('http://localhost:8080/api/auth/register', data);
+  registerUser(signupRequest: SignupRequest): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(`${this.apiUrl}/auth/signup`, signupRequest);
   }
 
-  loginUser(data: any): Observable<any> {
-    return this.http.post('http://localhost:8080/api/auth/login', data);
+  login(loginRequest: LoginRequest): Observable<JwtAuthResponse> {
+    return this.http.post<JwtAuthResponse>(`${this.apiUrl}/auth/login`, loginRequest);
   }
 
   // API call for fetching list of jobs
@@ -69,5 +75,13 @@ export class ApiService {
   updateUser(userData: any): Observable<any> {
     // Assume userData contains an id field
     return this.http.put(`${this.baseUrl}/users/${userData.id}`, userData);
+  }
+  getColleges(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/colleges`);
+  }
+  
+  // Company methods
+  getCompanies(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/companies`);
   }
 }

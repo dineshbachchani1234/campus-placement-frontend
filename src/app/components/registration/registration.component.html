@@ -1,64 +1,148 @@
-<mat-card class="registration-card">
-    <mat-card-title>Register</mat-card-title>
+<!-- src/app/components/registration/registration.component.html -->
+<div class="registration-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Create Account</mat-card-title>
+    </mat-card-header>
+    
     <mat-card-content>
       <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>First Name</mat-label>
-          <input matInput id="firstName" formControlName="firstName" type="text" />
-          <mat-error *ngIf="registrationForm.get('firstName')?.invalid && registrationForm.get('firstName')?.touched">
-            First Name is required.
-          </mat-error>
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Last Name</mat-label>
-          <input matInput id="lastName" formControlName="lastName" type="text" />
-          <mat-error *ngIf="registrationForm.get('lastName')?.invalid && registrationForm.get('lastName')?.touched">
-            Last Name is required.
-          </mat-error>
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput id="email" formControlName="email" type="email" />
-          <mat-error *ngIf="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched">
-            A valid email is required.
-          </mat-error>
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput id="password" formControlName="password" type="password" />
-          <mat-error *ngIf="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched">
-            Password is required.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-radio-group formControlName="role" class="full-width margin-top">
-          <mat-label>User Role</mat-label>
-          <mat-radio-button value="STUDENT">Student</mat-radio-button>
-          <mat-radio-button value="RECRUITER">Employer</mat-radio-button>
-          <mat-radio-button value="ADMIN">Admin</mat-radio-button>
-        </mat-radio-group>
+        <!-- Personal Information -->
+        <div class="form-section">
+          <h3>Personal Information</h3>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="First Name">
+            <mat-error *ngIf="registrationForm.get('firstName')?.hasError('required')">
+              First name is required
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Last Name">
+            <mat-error *ngIf="registrationForm.get('lastName')?.hasError('required')">
+              Last name is required
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" placeholder="Email" type="email">
+            <mat-error *ngIf="registrationForm.get('email')?.hasError('required')">
+              Email is required
+            </mat-error>
+            <mat-error *ngIf="registrationForm.get('email')?.hasError('email')">
+              Please enter a valid email address
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" placeholder="Password" type="password">
+            <mat-error *ngIf="registrationForm.get('password')?.hasError('required')">
+              Password is required
+            </mat-error>
+            <mat-error *ngIf="registrationForm.get('password')?.hasError('minlength')">
+              Password must be at least 6 characters
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput formControlName="confirmPassword" placeholder="Confirm Password" type="password">
+            <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('required')">
+              Please confirm your password
+            </mat-error>
+            <mat-error *ngIf="registrationForm.hasError('mismatch')">
+              Passwords do not match
+            </mat-error>
+          </mat-form-field>
+          
+          <div class="role-selector">
+            <label>I am a:</label>
+            <mat-radio-group formControlName="role">
+              <mat-radio-button value="STUDENT">Student</mat-radio-button>
+              <mat-radio-button value="RECRUITER">Recruiter</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
         
-        <mat-error *ngIf="registrationForm.get('role')?.invalid && registrationForm.get('role')?.touched">
-          Role is required.
-        </mat-error>
-  
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Confirm Password</mat-label>
-          <input matInput id="confirmPassword" formControlName="confirmPassword" type="password" />
-          <mat-error *ngIf="registrationForm.errors?.['mismatch'] && registrationForm.get('confirmPassword')?.touched">
-            Passwords do not match.
-          </mat-error>
-        </mat-form-field>
-  
-        <div class="margin-top">
+        <!-- Student Fields -->
+        <div class="form-section" *ngIf="registrationForm.get('role')?.value === 'STUDENT'">
+          <h3>Student Information</h3>
+          
+          <!-- For colleges -->
+<mat-form-field appearance="outline" class="full-width">
+  <mat-label>College</mat-label>
+  <mat-select formControlName="collegeId">
+    <mat-option *ngFor="let college of collegeOptions" [value]="college.collegeId">
+      {{ college.name }}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="registrationForm.get('collegeId')?.hasError('required')">
+    College is required
+  </mat-error>
+</mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Major</mat-label>
+            <input matInput formControlName="major" placeholder="Major">
+            <mat-error *ngIf="registrationForm.get('major')?.hasError('required')">
+              Major is required
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>GPA</mat-label>
+            <input matInput formControlName="gpa" placeholder="GPA (e.g., 3.5)">
+            <mat-error *ngIf="registrationForm.get('gpa')?.hasError('required')">
+              GPA is required
+            </mat-error>
+            <mat-error *ngIf="registrationForm.get('gpa')?.hasError('pattern')">
+              Please enter a valid GPA (0-4 range)
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Resume Summary</mat-label>
+            <textarea matInput formControlName="resume" placeholder="Brief summary of your skills and experience" rows="4"></textarea>
+          </mat-form-field>
+        </div>
+        
+        <!-- Recruiter Fields -->
+        <div class="form-section" *ngIf="registrationForm.get('role')?.value === 'RECRUITER'">
+          <h3>Recruiter Information</h3>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Company</mat-label>
+            <mat-select formControlName="companyId">
+              <mat-option *ngFor="let company of companyOptions" [value]="company.id">
+                {{ company.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="registrationForm.get('companyId')?.hasError('required')">
+              Company is required
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Position</mat-label>
+            <input matInput formControlName="position" placeholder="Position (e.g., HR Manager)">
+            <mat-error *ngIf="registrationForm.get('position')?.hasError('required')">
+              Position is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-actions">
           <button mat-raised-button color="primary" type="submit" [disabled]="registrationForm.invalid">
             Register
           </button>
+          <button mat-button type="button" routerLink="/login">Already have an account? Login</button>
         </div>
       </form>
     </mat-card-content>
   </mat-card>
-  
+</div>
