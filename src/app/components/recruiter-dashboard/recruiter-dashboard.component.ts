@@ -10,13 +10,13 @@ import { MatSnackBar }              from '@angular/material/snack-bar';
 
 import { ApiService }  from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
-
-import { JobListing }  from '../../models/job-listing.model';
+import { Student }     from '../../models/student.model'; // Added Student model import
+import { JobListing, JobType }  from '../../models/job-listing.model'; // Added JobType import
 import { FormsModule }             from '@angular/forms';
 import { MatFormFieldModule }  from '@angular/material/form-field';
 import { MatInputModule }      from '@angular/material/input';
 import { MatSelectModule }     from '@angular/material/select';
-import { JobType }                 from '../../models/job-listing.model'; 
+// Removed duplicate JobType import
 
 @Component({
   selector: 'app-recruiter-dashboard',
@@ -40,6 +40,11 @@ import { JobType }                 from '../../models/job-listing.model';
 export class RecruiterDashboardComponent implements OnInit {
   jobs: Array<JobListing & { applicantCount: number }> = [];
   loading = true;
+  selectedJob: JobListing | null = null; // Track selected job
+  applicants: Student[] = [];           // Store applicants for selected job
+  loadingApplicants = false;            // Loading state for applicants
+  showInterviewFormForApplicant: Student | null = null; // Track which applicant's form is open
+  interviewDetails = { date: '', time: '', notes: '' }; // Model for interview form
 
   displayedColumns = [
     'title',
@@ -133,11 +138,75 @@ export class RecruiterDashboardComponent implements OnInit {
   }
 
 
-  /** Navigate to an applicant review page (implement as needed) */
+  /** Fetch and display applicants for the selected job */
   viewApplicants(job: JobListing & { applicantCount: number }) {
-    // e.g. this.router.navigate([`/recruiter/jobs/${job.jobId}/applications`]);
-    console.log('Viewing applicants for job', job.jobId);
+    this.selectedJob = job;
+    this.applicants = []; // Clear previous applicants
+    this.loadingApplicants = true;
+    this.showInterviewFormForApplicant = null; // Close any open interview forms
+
+    this.api.getApplicantsForJob(job.jobId.toString()).subscribe({
+      next: (students) => {
+        this.applicants = students;
+        this.loadingApplicants = false;
+      },
+      error: (err) => {
+        console.error('Failed to load applicants', err);
+        this.snackBar.open('Error loading applicants', 'Close', { duration: 3000 });
+        this.loadingApplicants = false;
+      }
+    });
   }
+
+  /** Opens the interview scheduling form for a specific applicant */
+  openScheduleInterviewForm(applicant: Student) {
+    this.showInterviewFormForApplicant = applicant;
+    this.interviewDetails = { date: '', time: '', notes: '' }; // Reset form
+  }
+
+  /** Cancels the interview scheduling form */
+  cancelScheduleInterview() {
+    this.showInterviewFormForApplicant = null;
+  }
+
+  /** Submits the interview schedule to the backend */
+  submitScheduleInterview() {
+    if (!this.showInterviewFormForApplicant || !this.selectedJob || !this.interviewDetails.date || !this.interviewDetails.time) {
+      this.snackBar.open('Please fill in date and time.', 'Close', { duration: 3000 });
+      return;
+    }
+
+    // Combine date and time into an ISO string or suitable format for backend
+    // Basic combination, adjust if backend expects a different format or timezone handling
+    const dateTimeString = `${this.interviewDetails.date}T${this.interviewDetails.time}:00`; // Assuming local time
+
+    // Ensure currentUser and its ID are available
+    if (!this.auth.currentUser || this.auth.currentUser.id == null) {
+      this.snackBar.open('Cannot determine recruiter ID. Please log in again.', 'Close', { duration: 3000 });
+      return;
+    }
+
+    const interviewData = {
+      jobId: this.selectedJob.jobId,
+      studentId: this.showInterviewFormForApplicant.studentId, // Ensure Student model has studentId
+      recruiterId: this.auth.currentUser.id, // Add recruiter ID from auth service
+      dateTime: dateTimeString,
+      notes: this.interviewDetails.notes
+    };
+
+    this.api.scheduleInterview(interviewData).subscribe({
+      next: (interview) => {
+        this.snackBar.open(`Interview scheduled for ${this.showInterviewFormForApplicant?.firstName}`, 'Close', { duration: 3000 });
+        this.cancelScheduleInterview(); // Close form on success
+        // Optionally: Update UI to reflect scheduled interview (e.g., disable button)
+      },
+      error: (err) => {
+        console.error('Failed to schedule interview', err);
+        this.snackBar.open('Error scheduling interview', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
 
   deleteJob(job: JobListing & { applicantCount: number }) {
     if (!confirm(`Delete job “${job.title}”? This cannot be undone.`)) {

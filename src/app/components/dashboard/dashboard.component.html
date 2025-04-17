@@ -353,6 +353,81 @@
   </div>
 </section>
 
+<!-- Skills Section -->
+<section class="dashboard-section">
+  <h2>My Skills</h2>
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="skills.length === 0" class="empty-state">
+        <p>You haven't added any skills yet.</p>
+      </div>
+
+      <mat-chip-listbox *ngIf="skills.length > 0" aria-label="Skills list" class="skill-chips">
+        <mat-chip-option *ngFor="let skill of skills" class="skill-chip">
+          {{ skill.name }}
+          <button matChipRemove (click)="deleteSkill(skill.skillId)">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-option>
+      </mat-chip-listbox>
+
+      <div class="add-item-form">
+        <mat-form-field appearance="fill">
+          <mat-label>New Skill Name</mat-label>
+          <input matInput [(ngModel)]="newSkillName" placeholder="e.g., Java, Python, Angular">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="addSkill()" [disabled]="!newSkillName.trim()">Add Skill</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</section>
+
+<!-- Certifications Section -->
+<section class="dashboard-section">
+  <h2>My Certifications</h2>
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="certifications.length === 0" class="empty-state">
+        <p>You haven't added any certifications yet.</p>
+      </div>
+
+      <mat-list *ngIf="certifications.length > 0" class="certification-list">
+        <mat-list-item *ngFor="let cert of certifications">
+          <span matListItemTitle>{{ cert.name }}</span>
+          <span matListItemLine>Date: {{ formatDate(cert.certificationDate) }}</span>
+          <button mat-icon-button (click)="deleteCertification(cert.certificationId)" aria-label="Delete certification">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+
+      <div class="add-item-form">
+        <mat-form-field appearance="fill">
+          <mat-label>Certification Name</mat-label>
+          <input matInput [(ngModel)]="newCertificationName" placeholder="e.g., AWS Certified Developer" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Issuing Organization</mat-label>
+          <input matInput [(ngModel)]="newCertificationOrg" placeholder="e.g., Amazon Web Services" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Certification Date</mat-label>
+          <input matInput type="date" [(ngModel)]="newCertificationDate" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Expiry Date (Optional)</mat-label>
+          <input matInput type="date" [(ngModel)]="newCertificationExpiry">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Credential ID (Optional)</mat-label>
+          <input matInput [(ngModel)]="newCertificationCredentialId" placeholder="e.g., ABC-123-XYZ">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="addCertification()" [disabled]="!newCertificationName.trim() || !newCertificationOrg.trim() || !newCertificationDate">Add Certification</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</section>
+
 <!-- Template for the dialog -->
 <ng-template #experiencesDialog>
   <h2 mat-dialog-title>All Interview Experiences</h2>
