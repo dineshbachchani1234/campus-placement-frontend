@@ -105,7 +105,7 @@ export class RecruiterDashboardComponent implements OnInit {
   startEdit(job: JobListing & { applicantCount: number }) {
     this.showAddForm = true;
     this.editingJobId = job.jobId;
-    this.newJob = {
+    this.editJob = {
       title:       job.title,
       description: job.description,
       salary:      job.salary,
@@ -118,7 +118,8 @@ export class RecruiterDashboardComponent implements OnInit {
   cancelEdit() {
     this.showAddForm = false;
     this.editingJobId = null;
-    this.resetForm();
+    this.resetNewJob();
+  this.resetEditJob();
   }
 
   private resetForm() {
@@ -172,10 +173,8 @@ export class RecruiterDashboardComponent implements OnInit {
      default:                  return String(jobType || 'N/A');
    }
  }
-
  addJob(): void {
   const user = this.auth.currentUser;
-  // attach any defaults
   const payload = {
     ...this.newJob,
     postDate: new Date().toISOString().split('T')[0],
@@ -188,15 +187,8 @@ export class RecruiterDashboardComponent implements OnInit {
       this.snackBar.open('Job added!', 'Close', { duration: 3000 });
       this.jobs.push({ ...created, applicantCount: 0 });
       this.showAddForm = false;
-      this.ngOnInit();
-      // reset form
-      this.newJob = {
-        title: '',
-        description: '',
-        salary: 0,
-        jobType: this.jobTypes[0],
-        deadline: ''
-      };
+      this.ngOnInit(); // Consider using a more efficient way to refresh data
+      this.resetNewJob();
     },
     error: err => {
       console.error('Add job failed', err);
@@ -207,10 +199,9 @@ export class RecruiterDashboardComponent implements OnInit {
 
 updateJob(): void {
   if (this.editingJobId == null) return;
-  const user = this.auth.currentUser!;
   const payload = {
     id: this.editingJobId,
-    jobId: this.editingJobId,      // ← also include jobId
+    jobId: this.editingJobId,
     title:       this.editJob.title,
     description: this.editJob.description,
     salary:      this.editJob.salary,
@@ -220,6 +211,7 @@ updateJob(): void {
     isActive:    true,
     company:     { companyId: this.auth.currentUser!.id! }
   };
+  
   this.api.updateJob(payload).subscribe({
     next: () => {
       this.snackBar.open('Job updated!', 'Close', { duration: 3000 });
@@ -231,7 +223,6 @@ updateJob(): void {
       this.snackBar.open('Failed to update job', 'Close', { duration: 3000 });
     }
   });
-
 }
 
 private resetNewJob() {
@@ -252,6 +243,26 @@ private resetEditJob() {
     jobType: this.jobTypes[0],
     deadline: ''
   };
+}
+
+toggleAddForm(): void {
+  // If we're already editing, cancel the edit first
+  if (this.editingJobId !== null) {
+    this.cancelEdit();
+  }
+  
+  // Toggle the add form
+  this.showAddForm = !this.showAddForm;
+  
+  // If we're showing the form, reset it
+  if (this.showAddForm) {
+    this.resetNewJob();
+  }
+}
+
+cancelAddForm(): void {
+  this.showAddForm = false;
+  this.resetNewJob();
 }
 
 
