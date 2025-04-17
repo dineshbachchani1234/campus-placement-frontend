@@ -44,6 +44,11 @@ export class ApiService {
     );
   }
 
+  getInterviewsByJobId(jobId: string): Observable<Interview[]> {
+    return this.http.get<Interview[]>(`${this.apiUrl}/interviews/job/${jobId}`);
+  }
+  
+
   getApplicationsByJobId(jobId: string): Observable<Application[]> {
     return this.http.get<Application[]>(
       `${this.applicationBaseUrl}/jobs/${jobId}`
