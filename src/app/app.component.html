@@ -1,13 +1,4 @@
-<mat-toolbar color="primary">
-  <span>On Campus Placement</span>
-  <span class="spacer"></span>
-  <a mat-button routerLink="/">Home</a>
-  <a mat-button routerLink="/register" *ngIf="!authService.isAuthenticated()">Register</a>
-  <a mat-button routerLink="/login" *ngIf="!authService.isAuthenticated()">Login</a>
-  <a mat-button routerLink="/dashboard" *ngIf="authService.isStudent()">Dashboard</a>
-  <a mat-button routerLink="/employer-dashboard" *ngIf="authService.isEmployer()">Employer</a>
-  <a mat-button (click)="authService.logout()" *ngIf="authService.isAuthenticated()">Logout</a>
-</mat-toolbar>
+<app-header></app-header>
 
 <!-- This is where each routed component will be displayed -->
 <router-outlet></router-outlet>

@@ -15,6 +15,7 @@ import { RecruiterDashboardComponent } from './app/components/recruiter-dashboar
 import { JobPostingComponent } from './app/components/job-posting/job-posting.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AdminDashboardComponent } from './app/components/admin-dashboard/admin-dashboard.component';
+import { HeaderComponent } from './app/components/header/header.component';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -31,7 +32,8 @@ bootstrapApplication(AppComponent, {
       { path: 'job-posting', component: JobPostingComponent },
       { path: 'dashboard', component: DashboardComponent},
       { path: 'recruiter-dashboard', component: RecruiterDashboardComponent },
-      { path: 'admin-dashboard', component:  AdminDashboardComponent}
+      { path: 'admin-dashboard', component:  AdminDashboardComponent},
+      { path: 'header', component:  HeaderComponent}
       // Other routes as needed.
     ])
   ]
