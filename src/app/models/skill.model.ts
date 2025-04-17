@@ -1,5 +1,5 @@
 export interface Skill {
     skillId: number;
-    name: string;
+    skillName: string;
     description: string;
   }

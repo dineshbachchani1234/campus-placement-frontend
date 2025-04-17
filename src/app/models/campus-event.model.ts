@@ -1,3 +1,5 @@
+import { Company } from "./company.model";
+
 export interface CampusEvent {
     eventId:    number;
     admin:      { adminId: number };
@@ -8,11 +10,7 @@ export interface CampusEvent {
     companies:  Company[];
     sponsors:   Sponsor[];
   }
-  
-  export interface Company {
-    companyId: number;
-    name:      string;
-  }
+
   
   export interface Sponsor {
     sponsorId: number;

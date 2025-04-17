@@ -19,12 +19,15 @@ import { MatChipsModule, MatChipInputEvent } from '@angular/material/chips'; // 
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete'; // Import MatAutocompleteSelectedEvent
 import { ApiService }               from '../../services/api.service';
 import { MatSnackBar }              from '@angular/material/snack-bar';
-import { Company, Sponsor, CampusEvent }  from '../../models/campus-event.model';
+import { Sponsor, CampusEvent }  from '../../models/campus-event.model';
 import { MatIcon } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { COMMA, ENTER } from '@angular/cdk/keycodes'; // For chip input separators
 import { ElementRef, ViewChild } from '@angular/core'; // For accessing input element
 import { Observable, map, startWith } from 'rxjs'; // For autocomplete filtering
+import { Company } from '../../models/company.model';
+import { NgChartsModule }            from 'ng2-charts';
+
 
 
 
@@ -46,7 +49,8 @@ import { Observable, map, startWith } from 'rxjs'; // For autocomplete filtering
     MatChipsModule, // Add Chips module here
     MatAutocompleteModule, // Add Autocomplete module here
     MatIcon,
-    MatDividerModule
+    MatDividerModule,
+    NgChartsModule
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
@@ -58,13 +62,13 @@ export class AdminDashboardComponent implements OnInit {
 
   // Chip input configuration
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  selectedCompanies: (Company | { name: string })[] = []; // Can hold existing Company objects or new {name: string} objects
+  selectedCompanies: (Company | { companyName: string })[] = []; // Can hold existing Company objects or new {name: string} objects
   selectedSponsors: (Sponsor | { name: string })[] = [];
 
   // Autocomplete configuration
   companyCtrl = new FormControl(''); // Separate form control for the autocomplete input
   sponsorCtrl = new FormControl('');
-  filteredCompanies!: Observable<(Company | { name: string })[]>; // Observable for filtered company suggestions
+  filteredCompanies!: Observable<(Company | { companyName: string })[]>; // Observable for filtered company suggestions
   filteredSponsors!: Observable<(Sponsor | { name: string })[]>;
 
   @ViewChild('companyInput') companyInput!: ElementRef<HTMLInputElement>;
@@ -112,7 +116,7 @@ export class AdminDashboardComponent implements OnInit {
     this.filteredCompanies = this.companyCtrl.valueChanges.pipe(
       startWith(null),
       map((inputVal: string | Company | null) => {
-        const name = typeof inputVal === 'string' ? inputVal : inputVal?.name;
+        const name = typeof inputVal === 'string' ? inputVal : inputVal?.companyName;
         return name ? this._filterCompanies(name) : this.allCompanies.slice();
       }),
     );
@@ -129,7 +133,7 @@ export class AdminDashboardComponent implements OnInit {
   private _filterCompanies(value: string): Company[] {
     const filterValue = value.toLowerCase();
     return this.allCompanies.filter(company =>
-      company.name.toLowerCase().includes(filterValue) &&
+      company.companyName.toLowerCase().includes(filterValue) &&
       !this.selectedCompanies.some(sel => 'companyId' in sel && sel.companyId === company.companyId) // Exclude already selected
     );
   }
@@ -190,7 +194,7 @@ export class AdminDashboardComponent implements OnInit {
       date:        v.date.toISOString().split('T')[0],
       location:    v.location,
       // Map selected chips to the expected backend format (CompanyInput/SponsorInput)
-      companies:   this.selectedCompanies.map(c => 'companyId' in c ? { companyId: c.companyId } : { name: c.name }),
+      companies:   this.selectedCompanies.map(c => 'companyId' in c ? { companyId: c.companyId } : { name: c.companyName }),
       sponsors:    this.selectedSponsors.map(s => 'sponsorId' in s ? { sponsorId: s.sponsorId } : { name: s.name }),
       admin:       { adminId: +localStorage.getItem('userId')! } // Assuming adminId is stored like this
     };
@@ -215,14 +219,14 @@ export class AdminDashboardComponent implements OnInit {
 
   addCompany(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-    if (value && !this.selectedCompanies.some(c => c.name === value)) {
+    if (value && !this.selectedCompanies.some(c => c.companyName.toLowerCase === value.toLowerCase)) {
        // Check if it matches an existing company not already selected
-       const existing = this.allCompanies.find(c => c.name.toLowerCase() === value.toLowerCase() && !this.selectedCompanies.some(sel => 'companyId' in sel && sel.companyId === c.companyId));
+       const existing = this.allCompanies.find(c => c.companyName.toLowerCase() === value.toLowerCase() && !this.selectedCompanies.some(sel => 'companyId' in sel && sel.companyId === c.companyId));
        if (existing) {
          this.selectedCompanies.push(existing);
        } else {
          // Add as a new company name object
-         this.selectedCompanies.push({ name: value });
+         this.selectedCompanies.push({ companyName: value });
        }
     }
     // Clear the input value
@@ -230,7 +234,7 @@ export class AdminDashboardComponent implements OnInit {
     this.companyCtrl.setValue(null); // Reset autocomplete
   }
 
-  removeCompany(company: Company | { name: string }): void {
+  removeCompany(company: Company | { companyName: string }): void {
     const index = this.selectedCompanies.indexOf(company);
     if (index >= 0) {
       this.selectedCompanies.splice(index, 1);
