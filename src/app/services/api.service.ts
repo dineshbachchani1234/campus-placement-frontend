@@ -9,6 +9,8 @@ import { CareerFair } from '../models/careerfair.model';
 import { Application, JobListing } from '../models/application.model';
 import { Interview } from '../models/interview.model';
 import { InterviewExperience } from '../models/interview-experience.model';
+import { Sponsor } from '../models/sponsor.model';
+import { CampusEvent } from '../models/campus-event.model';
 
 @Injectable({
   providedIn: 'root'
@@ -148,4 +150,38 @@ export class ApiService {
   getCompanyById(companyId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/companies/${companyId}`);
   }
+
+  getAllCareerFairs(): Observable<CareerFair[]> {
+    return this.http.get<CareerFair[]>(`${this.baseUrl}/careerfairs`);
+  }
+
+  createCareerFair(fair: Partial<CareerFair>): Observable<CareerFair> {
+    return this.http.post<CareerFair>(`${this.baseUrl}/careerfairs`, fair);
+  }
+
+  updateCareerFair(fair: CareerFair): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/careerfairs/${fair.eventId}`, fair);
+  }
+
+  deleteCareerFair(fairId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/careerfairs/${fairId}`);
+  }
+
+  getAllEvents(): Observable<CampusEvent[]> {
+    return this.http.get<CampusEvent[]>(`${this.baseUrl}/careerfairs`);
+  }
+  createEvent(ev: Partial<CampusEvent>): Observable<CampusEvent> {
+    return this.http.post<CampusEvent>(`${this.baseUrl}/events`, ev);
+  }
+  updateEvent(ev: CampusEvent): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/events/${ev.eventId}`, ev);
+  }
+  deleteEvent(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/events/${id}`);
+  }
+
+  checkEmailAvailability(email: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/auth/check-email?email=${encodeURIComponent(email)}`);
+  }
+
 }

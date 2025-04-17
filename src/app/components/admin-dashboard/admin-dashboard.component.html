@@ -1,1 +1,100 @@
-<p>admin-dashboard works!</p>
+<mat-card class="admin-card">
+    <mat-card-title>
+      {{ editing ? 'Edit Event' : 'Create Event' }}
+    </mat-card-title>
+  
+    <form [formGroup]="form" (ngSubmit)="save()" class="event-form">
+      <!-- Title -->
+      <mat-form-field appearance="fill">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+      </mat-form-field>
+  
+      <!-- Description -->
+      <mat-form-field appearance="fill">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="2"></textarea>
+      </mat-form-field>
+  
+      <!-- Date -->
+      <mat-form-field appearance="fill">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+  
+      <!-- Location -->
+      <mat-form-field appearance="fill">
+        <mat-label>Location</mat-label>
+        <input matInput formControlName="location" />
+      </mat-form-field>
+  
+      <!-- Companies multi‑select -->
+      <mat-form-field appearance="fill">
+        <mat-label>Participating Companies</mat-label>
+        <mat-select formControlName="companies" multiple>
+          <mat-option *ngFor="let c of companies" [value]="c.companyId">
+            {{ c.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Sponsors multi‑select -->
+      <mat-form-field appearance="fill">
+        <mat-label>Sponsors</mat-label>
+        <mat-select formControlName="sponsors" multiple>
+          <mat-option *ngFor="let s of sponsors" [value]="s.sponsorId">
+            {{ s.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Actions -->
+      <div class="form-actions">
+        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+          {{ editing ? 'Save Changes' : 'Create Event' }}
+        </button>
+        <button mat-button type="button" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  
+    <mat-divider></mat-divider>
+  
+    <table mat-table [dataSource]="events" class="mat-elevation-z2">
+      <!-- Title -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Title</th>
+        <td mat-cell *matCellDef="let e">{{ e.title }}</td>
+      </ng-container>
+  
+      <!-- Date -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let e">{{ e.date }}</td>
+      </ng-container>
+  
+      <!-- Location -->
+      <ng-container matColumnDef="location">
+        <th mat-header-cell *matHeaderCellDef>Location</th>
+        <td mat-cell *matCellDef="let e">{{ e.location }}</td>
+      </ng-container>
+  
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let e">
+          <button mat-icon-button color="accent" (click)="startEdit(e)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="delete(e)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row        *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </mat-card>
+  

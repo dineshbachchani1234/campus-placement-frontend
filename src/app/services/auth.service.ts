@@ -94,7 +94,7 @@ export class AuthService {
   }
 
   isEmployer(): boolean {
-    return this.currentUser?.role === 'RECRUITER'; // Changed from 'employer' to match backend
+    return this.currentUser?.role === 'RECRUITER';
   }
 
   isAdmin(): boolean {

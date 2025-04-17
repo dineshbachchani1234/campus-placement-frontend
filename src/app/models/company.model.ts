@@ -1,7 +1,10 @@
 export interface Company {
-  companyId: number;
-  name: string;
-  industry: string;
-  email?: string;
-  contactNumbers?: string[];
+  companyId:   number;
+  companyName: string;     // <-- rename this
+  industry:    string;
+  companyEmail?: string;
+  telephone1?:  string;
+  telephone2?:  string;
+  telephone3?:  string;
+  telephone4?:  string;
 }

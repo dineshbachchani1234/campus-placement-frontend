@@ -6,7 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 @Component({
@@ -19,13 +20,16 @@ import { ApiService } from '../../services/api.service';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatIconModule,
+    RouterModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   loginForm!: FormGroup;
+  hidePassword = true;
 
   constructor(
     private fb: FormBuilder,
@@ -50,8 +54,16 @@ export class LoginComponent {
         password: this.loginForm.value.password
       };
 
+      // Show loading state
+      const loadingSnackBar = this.snackBar.open('Signing in...', '', {
+        duration: undefined,
+      });
+
       this.apiService.login(loginRequest).subscribe({
         next: (response) => {
+          // Close loading snackbar
+          loadingSnackBar.dismiss();
+          
           console.log('Login successful:', response);
   
           // Save token and user info to localStorage
@@ -63,7 +75,10 @@ export class LoginComponent {
           
           console.log('ROLE:', response.role);
           
-          this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
+          this.snackBar.open('Welcome back! Login successful', 'Close', { 
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          });
           
           // Navigate based on role
           if (response.role === 'STUDENT') {
@@ -73,10 +88,12 @@ export class LoginComponent {
             this.router.navigate(['/recruiter-dashboard']);
           } else if (response.role === 'ADMIN') {
             this.router.navigate(['/admin-dashboard']);
-            this.router.navigate(['/admin']);
           }
         },
         error: (err) => {
+          // Close loading snackbar
+          loadingSnackBar.dismiss();
+          
           console.error('Login error:', err);
           let errorMessage = 'Login failed';
           
@@ -84,13 +101,21 @@ export class LoginComponent {
             errorMessage = err.error.message;
           }
           
-          this.snackBar.open(errorMessage, 'Close', { duration: 5000 });
+          this.snackBar.open(errorMessage, 'Close', { 
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
         }
       });
     } else {
       // Mark all fields as touched to trigger validation messages
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
+      });
+      
+      this.snackBar.open('Please correct the errors in the form', 'Close', {
+        duration: 3000,
+        panelClass: ['warning-snackbar']
       });
     }
   }
