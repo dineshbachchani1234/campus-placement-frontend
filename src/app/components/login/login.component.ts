@@ -69,6 +69,7 @@ export class LoginComponent {
           if (response.role === 'STUDENT') {
             this.router.navigate(['/dashboard']);
           } else if (response.role === 'RECRUITER') {
+            localStorage.setItem('companyId', response.companyId?.toString() ?? '');
             this.router.navigate(['/recruiter-dashboard']);
           } else if (response.role === 'ADMIN') {
             this.router.navigate(['/admin']);

@@ -4,4 +4,5 @@ export interface JwtAuthResponse {
     userId: number;
     email: string;
     role: string;
+    companyId?: number;
   }

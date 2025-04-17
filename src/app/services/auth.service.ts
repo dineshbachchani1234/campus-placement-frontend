@@ -9,6 +9,7 @@ export interface User {
   email: string; // Added email property to match backend model
   role: 'STUDENT' | 'ADMIN' | 'RECRUITER'; // Match the backend enum
   token: string;
+  companyId?: number;
 }
 
 @Injectable({
@@ -28,6 +29,7 @@ export class AuthService {
       const lastName = localStorage.getItem('lastName') || '';
       const role = localStorage.getItem('role');
       const token = localStorage.getItem('token');
+      const companyId = localStorage.getItem('companyId');
       
       if (userId && email && role && token) {
         // Create user object from individual localStorage items
@@ -37,7 +39,8 @@ export class AuthService {
           lastName: lastName,
           email: email,
           role: role as 'STUDENT' | 'ADMIN' | 'RECRUITER',
-          token: token
+          token: token,
+          companyId: companyId ? parseInt(companyId) : undefined
         };
         console.log('Constructed user from localStorage:', user);
       }

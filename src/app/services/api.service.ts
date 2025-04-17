@@ -51,9 +51,8 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/jobs`);
   }
 
-  // API call for posting a new job (for employers)
-  postJob(jobData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/jobs`, jobData);
+  postJob(jobData: any): Observable<JobListing> {
+    return this.http.post<JobListing>(`${this.baseUrl}/jobs`, jobData);
   }
 
   // API call for fetching job details by ID

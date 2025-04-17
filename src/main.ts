@@ -11,7 +11,7 @@ import { DashboardComponent } from './app/components/dashboard/dashboard.compone
 import { JobListComponent } from './app/components/job-list/job-list.component';
 import { JobDetailsComponent } from './app/components/job-details/job-details.component';
 import { ApplicationComponent } from './app/components/application/application.component';
-import { RecruiterDashboardComponent } from './app/components/RecruiterDashboardComponent/recruiter-dashboard.component';
+import { RecruiterDashboardComponent } from './app/components/recruiter-dashboard/recruiter-dashboard.component';
 import { JobPostingComponent } from './app/components/job-posting/job-posting.component';
 import { RoleGuard } from './app/guards/role.guard';
 
