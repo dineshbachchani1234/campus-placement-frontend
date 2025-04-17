@@ -98,3 +98,24 @@ td.mat-cell:last-of-type {
   min-width: 80px;
   text-align: center;
 }
+
+.add-button-container {
+  margin: 1rem 0;
+}
+
+.add-job-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.add-job-form mat-form-field {
+  flex: 1 1 300px;
+}
+
+.form-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}

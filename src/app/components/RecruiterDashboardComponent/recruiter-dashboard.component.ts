@@ -12,7 +12,11 @@ import { ApiService }  from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 
 import { JobListing }  from '../../models/job-listing.model';
-import { Application } from '../../models/application.model';
+import { FormsModule }             from '@angular/forms';
+import { MatFormFieldModule }  from '@angular/material/form-field';
+import { MatInputModule }      from '@angular/material/input';
+import { MatSelectModule }     from '@angular/material/select';
+import { JobType }                 from '../../models/job-listing.model'; 
 
 @Component({
   selector: 'app-recruiter-dashboard',
@@ -24,7 +28,11 @@ import { Application } from '../../models/application.model';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    FormsModule
   ],
   templateUrl: './recruiter-dashboard.component.html',
   styleUrls: ['./recruiter-dashboard.component.css']
@@ -40,6 +48,17 @@ export class RecruiterDashboardComponent implements OnInit {
     'applicantCount',
     'actions'
   ];
+
+  showAddForm = false;
+
+  jobTypes = Object.values(JobType);
+  newJob: Partial<JobListing> = {
+    title: '',
+    description: '',
+    salary: 0,
+    jobType: this.jobTypes[0],
+    deadline: ''
+  };
 
   constructor(
     private api: ApiService,
@@ -79,4 +98,73 @@ export class RecruiterDashboardComponent implements OnInit {
     // e.g. this.router.navigate([`/recruiter/jobs/${job.jobId}/applications`]);
     console.log('Viewing applicants for job', job.jobId);
   }
+
+  deleteJob(job: JobListing & { applicantCount: number }) {
+    if (!confirm(`Delete job “${job.title}”? This cannot be undone.`)) {
+      return;
+    }
+    this.api.deleteJob(job.jobId.toString()).subscribe({
+      next: () => {
+        this.snackBar.open('Job deleted', 'Close', { duration: 3000 });
+        // remove it from the local array so the table updates immediately
+        this.jobs = this.jobs.filter(j => j.jobId !== job.jobId);
+      },
+      error: err => {
+        console.error('Delete failed', err);
+        this.snackBar.open('Failed to delete job', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  formatSalary(salary: number): string {
+    if (salary == null) return '–';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(salary);
+  }
+
+ formatJobType(jobType: JobType | string): string {
+  switch (jobType) {
+     case JobType.FULL_TIME:   return 'Full-time';
+     case JobType.PART_TIME:   return 'Part-time';
+     case JobType.INTERNSHIP:  return 'Internship';
+     default:                  return String(jobType || 'N/A');
+   }
+ }
+
+ addJob(): void {
+  const user = this.auth.currentUser;
+  // attach any defaults
+  const payload = {
+    ...this.newJob,
+    postDate: new Date().toISOString().split('T')[0],
+    isActive: true,
+    company: { companyId: this.auth.currentUser!.id! }
+  };
+
+  this.api.postJob(payload).subscribe({
+    next: created => {
+      this.snackBar.open('Job added!', 'Close', { duration: 3000 });
+      // refresh list (or simply push):
+      this.jobs.push({ ...created, applicantCount: 0 });
+      this.showAddForm = false;
+      this.ngOnInit();
+      // reset form
+      this.newJob = {
+        title: '',
+        description: '',
+        salary: 0,
+        jobType: this.jobTypes[0],
+        deadline: ''
+      };
+    },
+    error: err => {
+      console.error('Add job failed', err);
+      this.snackBar.open('Failed to add job', 'Close', { duration: 3000 });
+    }
+  });
+}
+
 }

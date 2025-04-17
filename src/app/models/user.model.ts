@@ -5,4 +5,5 @@ export interface User {
     email: string;
     role: 'STUDENT' | 'ADMIN' | 'RECRUITER'; // Match the backend enum
     token: string;
+    companyId?: number;
   }
