@@ -1,132 +1,177 @@
+/* dashboard.component.css */
+
 .dashboard-container {
+  padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-}
-
-.dashboard-section {
-  margin-bottom: 40px;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.upcoming-interviews {
-  background-color: #f5f9ff;
-  border-left: 4px solid #3f51b5;
-}
-
-.upcoming-interviews-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.upcoming-interview-card {
-  border-left: 4px solid #3f51b5;
-  transition: transform 0.2s;
-}
-
-.upcoming-interview-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.interview-date {
-  font-size: 14px;
-  margin-top: 10px;
-  color: #555;
+  font-family: 'Roboto', sans-serif;
 }
 
 h1 {
   color: #3f51b5;
-  margin-bottom: 30px;
-  font-size: 28px;
-  font-weight: 500;
+  margin-bottom: 32px;
+  font-size: 2.2rem;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 16px;
+  animation: fadeIn 0.8s ease-in-out;
 }
 
-h2 {
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 20px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
+.dashboard-section {
+  margin-bottom: 40px;
+  animation: slideUp 0.5s ease-out;
 }
 
-.mat-table {
-  width: 100%;
-  box-shadow: none !important;
-  border-radius: 4px;
+.dashboard-section h2 {
+  color: #455a64;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-section h2::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 24px;
+  background-color: #3f51b5;
+  margin-right: 12px;
+  border-radius: 2px;
+}
+
+mat-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  transition: box-shadow 0.3s ease;
+  margin-bottom: 16px;
+}
+
+mat-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+table.mat-elevation-z8 {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 8px;
   overflow: hidden;
+  width: 100%;
 }
 
-.mat-header-cell {
-  font-weight: 600;
+th.mat-header-cell {
+  background-color: #f5f7ff;
   color: #3f51b5;
+  font-weight: 500;
   font-size: 14px;
+  padding: 16px !important;
+  border-bottom: 2px solid #e0e0e0;
 }
 
-.mat-cell {
-  padding: 12px 0;
+td.mat-cell {
+  padding: 12px 16px !important;
   font-size: 14px;
-}
-
-tr.mat-row {
-  transition: background-color 0.2s;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 tr.mat-row:hover {
-  background-color: #f5f5f5;
+  background-color: #f8f9ff;
+  transition: background-color 0.2s ease;
 }
 
-/* Status chips and badges */
-.status-chip {
-  display: inline-block;
-  padding: 4px 12px;
+/* Status badges */
+.status-badge {
+  padding: 6px 12px;
   border-radius: 16px;
   font-size: 12px;
   font-weight: 500;
+  display: inline-block;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.application-status-pending {
+  background-color: #ffecb3;
+  color: #ff8f00;
+}
+
+.application-status-shortlisted {
+  background-color: #e1f5fe;
+  color: #0288d1;
+}
+
+.application-status-rejected {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.application-status-interviewed {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.application-status-offered {
+  background-color: #e8eaf6;
+  color: #3949ab;
+}
+
+.application-status-accepted {
+  background-color: #e0f2f1;
+  color: #00897b;
+}
+
+.application-status-declined {
+  background-color: #f3e5f5;
+  color: #8e24aa;
+}
+
+/* Status chips for interviews */
+.status-chip {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
 }
 
 .status-scheduled {
-  background-color: #e3f2fd;
-  color: #1976d2;
+  background-color: #e1f5fe;
+  color: #0288d1;
 }
 
 .status-completed {
   background-color: #e8f5e9;
-  color: #2e7d32;
+  color: #388e3c;
 }
 
 .status-cancelled {
   background-color: #ffebee;
-  color: #c62828;
+  color: #d32f2f;
 }
 
 .status-rescheduled {
   background-color: #fff8e1;
-  color: #f57f17;
+  color: #ffa000;
 }
 
+/* Result chips */
 .result-chip {
-  display: inline-block;
-  padding: 4px 12px;
+  padding: 6px 12px;
   border-radius: 16px;
   font-size: 12px;
   font-weight: 500;
+  display: inline-block;
 }
 
-.result-passed {
+.result-passed, .result-selected {
   background-color: #e8f5e9;
-  color: #2e7d32;
+  color: #388e3c;
 }
 
 .result-rejected {
   background-color: #ffebee;
-  color: #c62828;
+  color: #d32f2f;
 }
 
 .result-pending {
@@ -134,51 +179,15 @@ tr.mat-row:hover {
   color: #757575;
 }
 
-.status-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.application-status-pending {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.application-status-shortlisted {
-  background-color: #e0f7fa;
-  color: #0097a7;
-}
-
-.application-status-rejected {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
-.application-status-interviewed {
-  background-color: #f3e5f5;
-  color: #7b1fa2;
-}
-
-.application-status-offered {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.application-status-accepted {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.application-status-declined {
-  background-color: #fff8e1;
-  color: #f57f17;
-}
-
+/* Feedback styling */
 .feedback-text {
+  display: block;
   font-style: italic;
-  color: #555;
+  color: #616161;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .no-feedback {
@@ -186,35 +195,378 @@ tr.mat-row:hover {
   font-style: italic;
 }
 
-.action-button {
-  min-width: auto;
-  line-height: 28px;
-  padding: 0 12px;
+/* Button styling */
+button.mat-button, button.mat-raised-button {
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
 }
 
-/* Add these styles for the actions column buttons */
 .action-button {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  border-radius: 20px;
+  padding: 0 12px;
+  height: 36px;
 }
 
 .action-button .material-icons {
-  margin-right: 4px;
   font-size: 18px;
 }
 
 .cancelled-badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 16px;
   background-color: #f5f5f5;
   color: #757575;
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 4px;
 }
 
 .cancelled-badge .material-icons {
   font-size: 16px;
-  margin-right: 4px;
+}
+
+/* Empty state card styling */
+mat-card-content p {
+  color: #757575;
+  font-size: 15px;
+  text-align: center;
+  padding: 24px 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+  
+  .dashboard-section {
+    margin-bottom: 32px;
+  }
+}
+
+/* Add to your dashboard.component.css */
+
+/* Paginator styling */
+mat-paginator {
+  background-color: transparent;
+  margin-top: 8px;
+  border-radius: 0 0 8px 8px;
+  font-size: 14px;
+}
+
+/* Create a nice container with table and paginator together */
+.mat-elevation-z8 + mat-paginator {
+  border-top: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Interview Experience Carousel Styling */
+.carousel-container {
+  margin: 16px 0;
+  position: relative;
+}
+
+.experience-card {
+  margin: 8px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.experience-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.experience-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.company-info h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #3f51b5;
+  font-weight: 500;
+}
+
+.company-info h4 {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #757575;
+  font-weight: 400;
+}
+
+.rating {
+  color: #ffc107;
+}
+
+.rating .material-icons {
+  font-size: 18px;
+}
+
+.experience-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.experience-content p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #424242;
+}
+
+.experience-content p::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+}
+
+.experience-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  font-size: 12px;
+}
+
+.experience-author {
+  font-weight: 500;
+  color: #616161;
+}
+
+.experience-date {
+  color: #9e9e9e;
+}
+
+/* Owl carousel navigation styling */
+::ng-deep .owl-nav {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+::ng-deep .owl-nav button {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(63, 81, 181, 0.8) !important;
+  color: white !important;
+  border-radius: 50% !important;
+  pointer-events: auto;
+  transition: background-color 0.3s ease !important;
+  margin: 0 -20px;
+}
+
+::ng-deep .owl-nav button:hover {
+  background-color: rgba(63, 81, 181, 1) !important;
+}
+
+::ng-deep .owl-nav button i {
+  font-size: 24px;
+}
+
+::ng-deep .owl-dots {
+  margin-top: 16px !important;
+  text-align: center;
+}
+
+::ng-deep .owl-dots .owl-dot span {
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+  background-color: #e0e0e0 !important;
+  transition: background-color 0.3s ease !important;
+  border-radius: 50%;
+  display: block;
+}
+
+::ng-deep .owl-dots .owl-dot.active span,
+::ng-deep .owl-dots .owl-dot:hover span {
+  background-color: #3f51b5 !important;
+}
+
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.experience-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  transition: transform 0.2s;
+}
+
+.experience-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rating-container {
+  display: flex;
+  margin-top: 8px;
+}
+
+.rating-star {
+  color: #ffc107;
+}
+
+.experience-comment {
+  margin-top: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-height: 1.5;
+}
+
+.experience-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.view-all-btn {
+  grid-column: 1 / -1;
+  margin: 16px auto;
+}
+
+mat-card-header {
+  padding-bottom: 8px;
+}
+
+mat-card-content {
+  flex-grow: 1;
+}
+
+/* Interview Experiences Styles */
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.experience-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  transition: transform 0.2s;
+}
+
+.experience-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rating-container {
+  display: flex;
+  margin-top: 8px;
+}
+
+.rating-star {
+  color: #ffc107;
+  font-size: 20px;
+  margin-right: 2px;
+}
+
+.experience-comment {
+  margin-top: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  line-height: 1.5;
+}
+
+.experience-comment.full {
+  display: block;
+}
+
+.experience-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.view-all-btn {
+  grid-column: 1 / -1;
+  margin: 16px auto;
+}
+
+.all-experiences-container {
+  max-height: 70vh;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+/* Ensure dialog is properly sized */
+::ng-deep .experiences-dialog .mat-mdc-dialog-container {
+  max-width: 90vw !important;
+  width: 1200px;
 }

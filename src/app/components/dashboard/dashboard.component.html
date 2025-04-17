@@ -11,7 +11,7 @@
     </mat-card>
     
     <div *ngIf="applications.length > 0">
-      <table mat-table [dataSource]="applications" class="mat-elevation-z8">
+      <table mat-table [dataSource]="paginatedApplications" class="mat-elevation-z8">
         <!-- Job Title Column -->
         <ng-container matColumnDef="jobTitle">
           <th mat-header-cell *matHeaderCellDef>Job Title</th>
@@ -74,6 +74,15 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumnsApplications"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsApplications;"></tr>
       </table>
+
+      <mat-paginator
+      [length]="applications.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="applicationsPageIndex"
+      (page)="onApplicationsPageChange($event)"
+      aria-label="Select page of applications">
+    </mat-paginator>
     </div>
   </section>
   
@@ -87,7 +96,7 @@
     </mat-card>
     
     <div *ngIf="interviews.length > 0">
-      <table mat-table [dataSource]="interviews" class="mat-elevation-z8">
+      <table mat-table [dataSource]="paginatedInterviews" class="mat-elevation-z8">
         <!-- Job Title Column -->
         <ng-container matColumnDef="jobTitle">
           <th mat-header-cell *matHeaderCellDef>Job Title</th>
@@ -171,6 +180,14 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumnsInterviews"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsInterviews;"></tr>
       </table>
+      <mat-paginator
+      [length]="interviews.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="interviewsPageIndex"
+      (page)="onInterviewsPageChange($event)"
+      aria-label="Select page of interviews">
+    </mat-paginator>
     </div>
   </section>
   
@@ -184,7 +201,7 @@
     </mat-card>
     
     <div *ngIf="careerFairs.length > 0">
-      <table mat-table [dataSource]="careerFairs" class="mat-elevation-z8">
+      <table mat-table [dataSource]="paginatedCareerFairs" class="mat-elevation-z8">
         <!-- Title Column -->
         <ng-container matColumnDef="title">
           <th mat-header-cell *matHeaderCellDef>Title</th>
@@ -214,10 +231,20 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumnsCareerFairs"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsCareerFairs;"></tr>
       </table>
+
+      <mat-paginator
+      [length]="careerFairs.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="careerFairsPageIndex"
+      (page)="onCareerFairsPageChange($event)"
+      aria-label="Select page of career fairs">
+    </mat-paginator>
+
     </div>
   </section>
 
-  <!-- ... previous sections ... -->
+  <!-- ... available job section ... -->
 
 <section class="dashboard-section">
   <h2>Available Jobs</h2>
@@ -228,7 +255,7 @@
   </mat-card>
 
   <div *ngIf="jobs.length > 0">
-    <table mat-table [dataSource]="jobs" class="mat-elevation-z8">
+    <table mat-table [dataSource]="paginatedJobs" class="mat-elevation-z8">
 
       <!-- Title Column -->
       <ng-container matColumnDef="title">
@@ -265,7 +292,102 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumnsJobs"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsJobs;"></tr>
     </table>
+
+    <mat-paginator
+      [length]="jobs.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="jobsPageIndex"
+      (page)="onJobsPageChange($event)"
+      aria-label="Select page of jobs">
+    </mat-paginator>
+
   </div>
 </section>
+
+
+<section class="dashboard-section">
+  <h2>Recent Interview Experiences</h2>
+  <mat-card *ngIf="interviewExperiences.length === 0">
+    <mat-card-content>
+      <p>No interview experiences shared yet. Be the first to share your experience!</p>
+    </mat-card-content>
+  </mat-card>
+  
+  <div *ngIf="interviewExperiences.length > 0" class="experience-grid">
+    <mat-card class="experience-card" *ngFor="let exp of interviewExperiences.slice(0, 4)">
+      <mat-card-header>
+        <mat-card-title>{{ exp.interview.application?.job?.company?.companyName || 'Company' }}</mat-card-title>
+        <mat-card-subtitle>{{ exp.interview.application?.job?.title || 'Position' }}</mat-card-subtitle>
+        <div class="rating-container">
+          <span *ngFor="let star of [1,2,3,4,5]" class="rating-star">
+            <span>{{ star <= exp.rating ? '★' : '☆' }}</span>
+          </span>
+        </div>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <p class="experience-comment">{{ exp.comment }}</p>
+      </mat-card-content>
+      
+      <mat-card-footer>
+        <div class="experience-footer">
+          <span class="experience-author">
+            {{ exp.student.firstName || 'Anonymous' }} {{ exp.student.lastName || '' }}
+          </span>
+          <span class="experience-date">
+            {{ exp.postDate ? formatDate(exp.postDate) : 'Recently' }}
+          </span>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+    
+    <button 
+      *ngIf="interviewExperiences.length > 4" 
+      mat-button 
+      color="primary" 
+      class="view-all-btn"
+      (click)="openExperiencesDialog()">
+      View All Experiences
+    </button>
+  </div>
+</section>
+
+<!-- Template for the dialog -->
+<ng-template #experiencesDialog>
+  <h2 mat-dialog-title>All Interview Experiences</h2>
+  <mat-dialog-content class="all-experiences-container">
+    <mat-card class="experience-card" *ngFor="let exp of interviewExperiences">
+      <mat-card-header>
+        <mat-card-title>{{ exp.interview.application?.job?.company?.companyName || 'Company' }}</mat-card-title>
+        <mat-card-subtitle>{{ exp.interview.application?.job?.title || 'Position' }}</mat-card-subtitle>
+        <div class="rating-container">
+          <span *ngFor="let star of [1,2,3,4,5]" class="rating-star">
+            <span>{{ star <= exp.rating ? '★' : '☆' }}</span>
+          </span>
+        </div>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <p class="experience-comment full">{{ exp.comment }}</p>
+      </mat-card-content>
+      
+      <mat-card-footer>
+        <div class="experience-footer">
+          <span class="experience-author">
+            {{ exp.student.firstName || 'Anonymous' }} {{ exp.student.lastName || '' }}
+          </span>
+          <span class="experience-date">
+            {{ exp.postDate ? formatDate(exp.postDate) : 'Recently' }}
+          </span>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</ng-template>
+
 
 </div>

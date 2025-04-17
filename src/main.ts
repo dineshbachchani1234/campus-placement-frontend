@@ -13,11 +13,12 @@ import { JobDetailsComponent } from './app/components/job-details/job-details.co
 import { ApplicationComponent } from './app/components/application/application.component';
 import { RecruiterDashboardComponent } from './app/components/recruiter-dashboard/recruiter-dashboard.component';
 import { JobPostingComponent } from './app/components/job-posting/job-posting.component';
-import { RoleGuard } from './app/guards/role.guard';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(HttpClientModule),
+    provideAnimations(),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     provideRouter([
       { path: '', component: HomeComponent },

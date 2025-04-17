@@ -138,6 +138,12 @@ export class ApiService {
   getJobById(jobId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/jobs/${jobId}`);
   }
+
+  getInterviewExperiences(): Observable<InterviewExperience[]> {
+    return this.http.get<InterviewExperience[]>(
+      `${this.baseUrl}/interviews/experiences`
+    );
+  }
   
   getCompanyById(companyId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/companies/${companyId}`);
