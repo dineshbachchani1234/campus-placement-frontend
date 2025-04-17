@@ -72,6 +72,7 @@ export class LoginComponent {
             localStorage.setItem('companyId', response.companyId?.toString() ?? '');
             this.router.navigate(['/recruiter-dashboard']);
           } else if (response.role === 'ADMIN') {
+            this.router.navigate(['/admin-dashboard']);
             this.router.navigate(['/admin']);
           }
         },

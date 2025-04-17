@@ -85,34 +85,25 @@
 </mat-card>
 
 <div class="add-button-container">
-  <button mat-flat-button color="primary" (click)="showAddForm = !showAddForm; cancelEdit()">
+  <button mat-flat-button color="primary" (click)="toggleAddForm()">
     {{ showAddForm ? 'Cancel' : 'Add Job' }}
   </button>
 </div>
-
-
 <form
-  *ngIf="showAddForm"
-  (ngSubmit)="editingJobId != null ? updateJob() : addJob()"
-  #jobForm="ngForm"
+  *ngIf="showAddForm && !editingJobId"
+  (ngSubmit)="addJob()"
+  #addJobForm="ngForm"
   class="add-job-form"
 >
+  <h2>Add New Job</h2>
+  
   <!-- TITLE -->
   <mat-form-field appearance="fill">
     <mat-label>Title</mat-label>
-    <!-- if editing, bind to editJob.title, else newJob.title -->
     <input
       matInput
-      name="title"
+      name="addTitle"
       required
-      *ngIf="editingJobId != null"
-      [(ngModel)]="editJob.title"
-    />
-    <input
-      matInput
-      name="title"
-      required
-      *ngIf="editingJobId == null"
       [(ngModel)]="newJob.title"
     />
   </mat-form-field>
@@ -122,18 +113,9 @@
     <mat-label>Description</mat-label>
     <textarea
       matInput
-      name="description"
+      name="addDescription"
       rows="3"
       required
-      *ngIf="editingJobId != null"
-      [(ngModel)]="editJob.description"
-    ></textarea>
-    <textarea
-      matInput
-      name="description"
-      rows="3"
-      required
-      *ngIf="editingJobId == null"
       [(ngModel)]="newJob.description"
     ></textarea>
   </mat-form-field>
@@ -144,17 +126,8 @@
     <input
       matInput
       type="number"
-      name="salary"
+      name="addSalary"
       required
-      *ngIf="editingJobId != null"
-      [(ngModel)]="editJob.salary"
-    />
-    <input
-      matInput
-      type="number"
-      name="salary"
-      required
-      *ngIf="editingJobId == null"
       [(ngModel)]="newJob.salary"
     />
   </mat-form-field>
@@ -163,19 +136,8 @@
   <mat-form-field appearance="fill">
     <mat-label>Job Type</mat-label>
     <mat-select
-      name="jobType"
+      name="addJobType"
       required
-      *ngIf="editingJobId != null"
-      [(ngModel)]="editJob.jobType"
-    >
-      <mat-option *ngFor="let jt of jobTypes" [value]="jt">
-        {{ jt.replace('_', ' ') | titlecase }}
-      </mat-option>
-    </mat-select>
-    <mat-select
-      name="jobType"
-      required
-      *ngIf="editingJobId == null"
       [(ngModel)]="newJob.jobType"
     >
       <mat-option *ngFor="let jt of jobTypes" [value]="jt">
@@ -190,27 +152,99 @@
     <input
       matInput
       type="date"
-      name="deadline"
+      name="addDeadline"
       required
-      *ngIf="editingJobId != null"
-      [(ngModel)]="editJob.deadline"
-    />
-    <input
-      matInput
-      type="date"
-      name="deadline"
-      required
-      *ngIf="editingJobId == null"
       [(ngModel)]="newJob.deadline"
     />
   </mat-form-field>
 
-  <!-- FORM ACTIONS -->
+  <!-- ADD FORM ACTIONS -->
   <div class="form-actions">
-    <button mat-flat-button color="accent" type="submit" [disabled]="jobForm.invalid">
-      {{ editingJobId != null ? 'Save Changes' : 'Submit' }}
+    <button mat-flat-button color="accent" type="submit" [disabled]="addJobForm.invalid">
+      Submit
     </button>
-    <button *ngIf="editingJobId != null" mat-button type="button" (click)="cancelEdit()">
+    <button mat-button type="button" (click)="cancelAddForm()">
+      Cancel
+    </button>
+  </div>
+</form>
+
+<!-- Edit Job Form - Completely separate form -->
+<form
+  *ngIf="editingJobId !== null"
+  (ngSubmit)="updateJob()"
+  #editJobForm="ngForm"
+  class="edit-job-form"
+>
+  <h2>Edit Job</h2>
+  
+  <!-- TITLE -->
+  <mat-form-field appearance="fill">
+    <mat-label>Title</mat-label>
+    <input
+      matInput
+      name="editTitle"
+      required
+      [(ngModel)]="editJob.title"
+    />
+  </mat-form-field>
+
+  <!-- DESCRIPTION -->
+  <mat-form-field appearance="fill">
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      name="editDescription"
+      rows="3"
+      required
+      [(ngModel)]="editJob.description"
+    ></textarea>
+  </mat-form-field>
+
+  <!-- SALARY -->
+  <mat-form-field appearance="fill">
+    <mat-label>Salary</mat-label>
+    <input
+      matInput
+      type="number"
+      name="editSalary"
+      required
+      [(ngModel)]="editJob.salary"
+    />
+  </mat-form-field>
+
+  <!-- JOB TYPE -->
+  <mat-form-field appearance="fill">
+    <mat-label>Job Type</mat-label>
+    <mat-select
+      name="editJobType"
+      required
+      [(ngModel)]="editJob.jobType"
+    >
+      <mat-option *ngFor="let jt of jobTypes" [value]="jt">
+        {{ jt.replace('_', ' ') | titlecase }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- DEADLINE -->
+  <mat-form-field appearance="fill">
+    <mat-label>Deadline</mat-label>
+    <input
+      matInput
+      type="date"
+      name="editDeadline"
+      required
+      [(ngModel)]="editJob.deadline"
+    />
+  </mat-form-field>
+
+  <!-- EDIT FORM ACTIONS -->
+  <div class="form-actions">
+    <button mat-flat-button color="accent" type="submit" [disabled]="editJobForm.invalid">
+      Save Changes
+    </button>
+    <button mat-button type="button" (click)="cancelEdit()">
       Cancel
     </button>
   </div>
