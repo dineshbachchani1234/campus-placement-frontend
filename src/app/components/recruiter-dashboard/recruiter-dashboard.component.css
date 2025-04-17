@@ -119,3 +119,47 @@ td.mat-cell:last-of-type {
   display: flex;
   justify-content: flex-end;
 }
+
+/* recruiter-dashboard.component.css */
+.dashboard-card {
+  margin: 1rem;
+  padding: 1rem;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.jobs-table {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.actions-cell button {
+  margin-right: 0.5rem;
+}
+
+.add-button-container {
+  margin: 1rem 0;
+}
+
+.add-job-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.add-job-form mat-form-field {
+  flex: 1 1 300px;
+}
+
+.form-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+ 

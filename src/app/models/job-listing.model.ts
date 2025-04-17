@@ -8,6 +8,7 @@ export enum JobType {
 }
 
 export interface JobListing {
+  id?:      number;  
   jobId: number;
   title: string;
   description: string;

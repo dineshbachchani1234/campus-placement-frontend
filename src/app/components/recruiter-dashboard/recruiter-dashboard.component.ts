@@ -50,9 +50,18 @@ export class RecruiterDashboardComponent implements OnInit {
   ];
 
   showAddForm = false;
+  editingJobId: number | null = null;
 
   jobTypes = Object.values(JobType);
   newJob: Partial<JobListing> = {
+    title: '',
+    description: '',
+    salary: 0,
+    jobType: this.jobTypes[0],
+    deadline: ''
+  };
+
+  editJob: Partial<JobListing> = {
     title: '',
     description: '',
     salary: 0,
@@ -92,6 +101,36 @@ export class RecruiterDashboardComponent implements OnInit {
       complete: () => this.loading = false
     });
   }
+
+  startEdit(job: JobListing & { applicantCount: number }) {
+    this.showAddForm = true;
+    this.editingJobId = job.jobId;
+    this.newJob = {
+      title:       job.title,
+      description: job.description,
+      salary:      job.salary,
+      jobType:     job.jobType,
+      deadline:    job.deadline
+    };
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  cancelEdit() {
+    this.showAddForm = false;
+    this.editingJobId = null;
+    this.resetForm();
+  }
+
+  private resetForm() {
+    this.newJob = {
+      title:       '',
+      description: '',
+      salary:      0,
+      jobType:     this.jobTypes[0],
+      deadline:    ''
+    };
+  }
+
 
   /** Navigate to an applicant review page (implement as needed) */
   viewApplicants(job: JobListing & { applicantCount: number }) {
@@ -147,7 +186,6 @@ export class RecruiterDashboardComponent implements OnInit {
   this.api.postJob(payload).subscribe({
     next: created => {
       this.snackBar.open('Job added!', 'Close', { duration: 3000 });
-      // refresh list (or simply push):
       this.jobs.push({ ...created, applicantCount: 0 });
       this.showAddForm = false;
       this.ngOnInit();
@@ -166,5 +204,55 @@ export class RecruiterDashboardComponent implements OnInit {
     }
   });
 }
+
+updateJob(): void {
+  if (this.editingJobId == null) return;
+  const user = this.auth.currentUser!;
+  const payload = {
+    id: this.editingJobId,
+    jobId: this.editingJobId,      // ← also include jobId
+    title:       this.editJob.title,
+    description: this.editJob.description,
+    salary:      this.editJob.salary,
+    jobType:     this.editJob.jobType,
+    deadline:    this.editJob.deadline,
+    postDate:    new Date().toISOString().split('T')[0],
+    isActive:    true,
+    company:     { companyId: this.auth.currentUser!.id! }
+  };
+  this.api.updateJob(payload).subscribe({
+    next: () => {
+      this.snackBar.open('Job updated!', 'Close', { duration: 3000 });
+      this.ngOnInit();
+      this.cancelEdit();
+    },
+    error: err => {
+      console.error('Update failed', err);
+      this.snackBar.open('Failed to update job', 'Close', { duration: 3000 });
+    }
+  });
+
+}
+
+private resetNewJob() {
+  this.newJob = {
+    title: '',
+    description: '',
+    salary: 0,
+    jobType: this.jobTypes[0],
+    deadline: ''
+  };
+}
+
+private resetEditJob() {
+  this.editJob = {
+    title: '',
+    description: '',
+    salary: 0,
+    jobType: this.jobTypes[0],
+    deadline: ''
+  };
+}
+
 
 }

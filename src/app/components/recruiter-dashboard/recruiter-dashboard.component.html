@@ -58,6 +58,14 @@
             matTooltip="View {{ job.applicantCount }} applicants">
             <mat-icon>people</mat-icon>
           </button>
+
+          <button
+          mat-icon-button
+          color="accent"
+          (click)="startEdit(job)"
+          matTooltip="Edit job">
+          <mat-icon>edit</mat-icon>
+        </button>
       
           <!-- delete job -->
           <button
@@ -77,79 +85,133 @@
 </mat-card>
 
 <div class="add-button-container">
-  <button
-    mat-flat-button
-    color="primary"
-    (click)="showAddForm = !showAddForm">
+  <button mat-flat-button color="primary" (click)="showAddForm = !showAddForm; cancelEdit()">
     {{ showAddForm ? 'Cancel' : 'Add Job' }}
   </button>
 </div>
 
-<!-- Add Job Form -->
+
 <form
   *ngIf="showAddForm"
+  (ngSubmit)="editingJobId != null ? updateJob() : addJob()"
+  #jobForm="ngForm"
   class="add-job-form"
-  (ngSubmit)="addJob()"
-  #jobForm="ngForm">
-
+>
+  <!-- TITLE -->
   <mat-form-field appearance="fill">
     <mat-label>Title</mat-label>
+    <!-- if editing, bind to editJob.title, else newJob.title -->
     <input
       matInput
       name="title"
+      required
+      *ngIf="editingJobId != null"
+      [(ngModel)]="editJob.title"
+    />
+    <input
+      matInput
+      name="title"
+      required
+      *ngIf="editingJobId == null"
       [(ngModel)]="newJob.title"
-      required>
+    />
   </mat-form-field>
 
+  <!-- DESCRIPTION -->
   <mat-form-field appearance="fill">
     <mat-label>Description</mat-label>
     <textarea
       matInput
       name="description"
+      rows="3"
+      required
+      *ngIf="editingJobId != null"
+      [(ngModel)]="editJob.description"
+    ></textarea>
+    <textarea
+      matInput
+      name="description"
+      rows="3"
+      required
+      *ngIf="editingJobId == null"
       [(ngModel)]="newJob.description"
-      required>
-    </textarea>
+    ></textarea>
   </mat-form-field>
 
+  <!-- SALARY -->
   <mat-form-field appearance="fill">
     <mat-label>Salary</mat-label>
     <input
       matInput
       type="number"
       name="salary"
+      required
+      *ngIf="editingJobId != null"
+      [(ngModel)]="editJob.salary"
+    />
+    <input
+      matInput
+      type="number"
+      name="salary"
+      required
+      *ngIf="editingJobId == null"
       [(ngModel)]="newJob.salary"
-      required>
+    />
   </mat-form-field>
 
+  <!-- JOB TYPE -->
   <mat-form-field appearance="fill">
     <mat-label>Job Type</mat-label>
     <mat-select
       name="jobType"
-      [(ngModel)]="newJob.jobType"
-      required>
+      required
+      *ngIf="editingJobId != null"
+      [(ngModel)]="editJob.jobType"
+    >
       <mat-option *ngFor="let jt of jobTypes" [value]="jt">
-        {{ jt.replace('_',' ').toLowerCase() | titlecase }}
+        {{ jt.replace('_', ' ') | titlecase }}
+      </mat-option>
+    </mat-select>
+    <mat-select
+      name="jobType"
+      required
+      *ngIf="editingJobId == null"
+      [(ngModel)]="newJob.jobType"
+    >
+      <mat-option *ngFor="let jt of jobTypes" [value]="jt">
+        {{ jt.replace('_', ' ') | titlecase }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
+  <!-- DEADLINE -->
   <mat-form-field appearance="fill">
     <mat-label>Deadline</mat-label>
     <input
       matInput
       type="date"
       name="deadline"
+      required
+      *ngIf="editingJobId != null"
+      [(ngModel)]="editJob.deadline"
+    />
+    <input
+      matInput
+      type="date"
+      name="deadline"
+      required
+      *ngIf="editingJobId == null"
       [(ngModel)]="newJob.deadline"
-      required>
+    />
   </mat-form-field>
 
+  <!-- FORM ACTIONS -->
   <div class="form-actions">
-    <button
-      mat-flat-button
-      color="accent"
-      type="submit"
-      [disabled]="jobForm.invalid">
-      Submit
+    <button mat-flat-button color="accent" type="submit" [disabled]="jobForm.invalid">
+      {{ editingJobId != null ? 'Save Changes' : 'Submit' }}
+    </button>
+    <button *ngIf="editingJobId != null" mat-button type="button" (click)="cancelEdit()">
+      Cancel
     </button>
   </div>
 </form>
