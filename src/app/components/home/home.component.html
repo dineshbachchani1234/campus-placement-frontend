@@ -1,8 +1,62 @@
-<mat-card class="home-card">
-    <mat-card-title>Welcome to On Campus Placement</mat-card-title>
+<div class="homepage-wrapper">
+  <!-- Background Overlay -->
+  <div class="background-overlay"></div>
+
+  <!-- Main Card -->
+  <mat-card class="home-card animated-fade-in">
+    <div class="welcome-header">
+      <mat-icon class="portal-icon">school</mat-icon>
+      <div>
+        <h1>Welcome to On Campus Placement</h1>
+        <h3>Your gateway to career opportunities</h3>
+      </div>
+    </div>
+
     <mat-card-content>
-      <p>This portal connects students, employers, and career services for on-campus placement opportunities.</p>
-      <p>Use the navigation menu above to register, login, and explore available jobs.</p>
+      <p>
+        Connecting <strong>students</strong>, <strong>employers</strong>, and <strong>universities</strong> for smart, efficient on-campus placements.
+      </p>
+
+      <div class="cta-buttons">
+        <button mat-raised-button color="primary" (click)="goToDashboard()">Dashboard</button>
+      </div>
     </mat-card-content>
   </mat-card>
-  
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <h2>Our Impact</h2>
+    <div class="stats-grid">
+      <div><strong>200+</strong><br />Students Placed</div>
+      <div><strong>50+</strong><br />Top Companies</div>
+      <div><strong>120+</strong><br />Job Listings</div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonial-section">
+    <h2>What Students Say</h2>
+    <div class="testimonial-grid">
+      <mat-card class="testimonial">
+        <p>"This portal helped me land my first internship in record time!"</p>
+        <small>– Priya S., CS Student</small>
+      </mat-card>
+      <mat-card class="testimonial">
+        <p>"So simple and powerful – everything I needed in one place."</p>
+        <small>– Rahul M., EE Graduate</small>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- Partner Logos -->
+  <section class="partner-section">
+    <h2>Our Recruiters</h2>
+    <div class="logo-grid">
+      <img src="assets/logos/google.png" alt="Google" />
+      <img src="assets/logos/microsoft.png" alt="Microsoft" />
+      <img src="assets/logos/amazon.png" alt="Amazon" />
+      <img src="assets/logos/accenture.png" alt="Accenture" />
+    </div>
+  </section>
+
+</div>

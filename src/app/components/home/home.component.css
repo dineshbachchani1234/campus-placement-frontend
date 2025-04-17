@@ -1,6 +1,73 @@
+.homepage-wrapper {
+  position: relative;
+  padding-bottom: 80px;
+  overflow-x: hidden;
+}
+
+.background-overlay {
+  background: linear-gradient(to right, #ece9e6, #ffffff);
+  background-image: url('/assets/bg-campus.jpg');
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -1;
+  opacity: 0.2;
+}
+
 .home-card {
-    max-width: 600px;
-    margin: 2rem auto;
-    text-align: center;
-  }
-  
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 32px;
+  border-radius: 16px;
+  background: #ffffffdd;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stats-section, .testimonial-section, .partner-section, .carousel-section {
+  max-width: 1000px;
+  margin: 60px auto;
+  text-align: center;
+}
+
+.stats-grid, .testimonial-grid, .logo-grid {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.stats-grid div {
+  font-size: 18px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  min-width: 160px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.testimonial {
+  width: 300px;
+  padding: 16px;
+  background: #fefefe;
+  border-left: 4px solid #3f51b5;
+}
+
+.logo-grid img {
+  height: 40px;
+  opacity: 0.8;
+  transition: 0.3s ease;
+}
+
+.logo-grid img:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.carousel-content {
+  padding: 24px;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
