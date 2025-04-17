@@ -15,6 +15,18 @@ import { CampusEvent } from '../models/campus-event.model';
 import { Skill } from '../models/skill.model';
 import { Certification } from '../models/certification.model';
 
+// Define a type for the event payload matching backend DTO structure
+type EventPayload = {
+  eventId?: number;
+  title: string;
+  description: string;
+  date: string; // YYYY-MM-DD
+  location: string;
+  companies: { companyId?: number; name?: string }[];
+  sponsors: { sponsorId?: number; name?: string }[];
+  admin: { adminId: number };
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -187,12 +199,15 @@ export class ApiService {
   }
 
   getAllEvents(): Observable<CampusEvent[]> {
-    return this.http.get<CampusEvent[]>(`${this.baseUrl}/careerfairs`);
+    return this.http.get<CampusEvent[]>(`${this.baseUrl}/events`);
   }
-  createEvent(ev: Partial<CampusEvent>): Observable<CampusEvent> {
+
+  // Type definition moved outside the class
+
+  createEvent(ev: EventPayload): Observable<CampusEvent> { // Use EventPayload type
     return this.http.post<CampusEvent>(`${this.baseUrl}/events`, ev);
   }
-  updateEvent(ev: CampusEvent): Observable<void> {
+  updateEvent(ev: EventPayload): Observable<void> { // Use EventPayload type
     return this.http.put<void>(`${this.baseUrl}/events/${ev.eventId}`, ev);
   }
   deleteEvent(id: number): Observable<void> {

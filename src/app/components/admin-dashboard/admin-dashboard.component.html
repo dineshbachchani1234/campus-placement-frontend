@@ -29,27 +29,61 @@
         <mat-label>Location</mat-label>
         <input matInput formControlName="location" />
       </mat-form-field>
-  
-      <!-- Companies multi‑select -->
-      <mat-form-field appearance="fill">
+
+      <!-- Companies Chip Input with Autocomplete -->
+      <mat-form-field class="chip-list-field" appearance="fill">
         <mat-label>Participating Companies</mat-label>
-        <mat-select formControlName="companies" multiple>
-          <mat-option *ngFor="let c of companies" [value]="c.companyId">
-            {{ c.name }}
-          </mat-option>
-        </mat-select>
+        <mat-chip-grid #companyChipGrid aria-label="Company selection">
+          <mat-chip-row *ngFor="let company of selectedCompanies" (removed)="removeCompany(company)">
+            {{ company.name }}
+            <button matChipRemove aria-label="'remove ' + company.name">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+        <input
+          placeholder="Add company..."
+          #companyInput
+          [formControl]="companyCtrl"
+          [matAutocomplete]="autoCompany"
+          [matChipInputFor]="companyChipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addCompany($event)"
+        />
+        <mat-autocomplete #autoCompany="matAutocomplete" (optionSelected)="selectedCompany($event)">
+           <mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
+             {{ company.name }}
+           </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
-  
-      <!-- Sponsors multi‑select -->
-      <mat-form-field appearance="fill">
-        <mat-label>Sponsors</mat-label>
-        <mat-select formControlName="sponsors" multiple>
-          <mat-option *ngFor="let s of sponsors" [value]="s.sponsorId">
-            {{ s.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-  
+
+      <!-- Sponsors Chip Input with Autocomplete -->
+       <mat-form-field class="chip-list-field" appearance="fill">
+         <mat-label>Sponsors</mat-label>
+         <mat-chip-grid #sponsorChipGrid aria-label="Sponsor selection">
+           <mat-chip-row *ngFor="let sponsor of selectedSponsors" (removed)="removeSponsor(sponsor)">
+             {{ sponsor.name }}
+             <button matChipRemove aria-label="'remove ' + sponsor.name">
+               <mat-icon>cancel</mat-icon>
+             </button>
+           </mat-chip-row>
+         </mat-chip-grid>
+         <input
+           placeholder="Add sponsor..."
+           #sponsorInput
+           [formControl]="sponsorCtrl"
+           [matAutocomplete]="autoSponsor"
+           [matChipInputFor]="sponsorChipGrid"
+           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+           (matChipInputTokenEnd)="addSponsor($event)"
+         />
+         <mat-autocomplete #autoSponsor="matAutocomplete" (optionSelected)="selectedSponsor($event)">
+            <mat-option *ngFor="let sponsor of filteredSponsors | async" [value]="sponsor">
+              {{ sponsor.name }}
+            </mat-option>
+         </mat-autocomplete>
+       </mat-form-field>
+
       <!-- Actions -->
       <div class="form-actions">
         <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
@@ -97,4 +131,3 @@
       <tr mat-row        *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
   </mat-card>
-  
