@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
@@ -20,6 +21,11 @@ import { OwlOptions } from 'ngx-owl-carousel-o';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { MatIconModule } from '@angular/material/icon';
 import { InterviewExperienceService } from '../../services/interview-experience.service';
+import { MatFormFieldModule } from '@angular/material/form-field'; // Import MatFormFieldModule
+import { MatInputModule } from '@angular/material/input'; // Import MatInputModule
+import { MatListModule } from '@angular/material/list'; // Import MatListModule
+import { Skill } from '../../models/skill.model'; // Import Skill model
+import { Certification } from '../../models/certification.model'; // Import Certification model
 
 
 @Component({
@@ -30,8 +36,13 @@ import { InterviewExperienceService } from '../../services/interview-experience.
     MatButtonModule,
     MatDialogModule,
     MatPaginatorModule,
-    CarouselModule ,
-    MatIconModule
+    CarouselModule,
+    MatIconModule,
+    FormsModule, // Add FormsModule
+    MatFormFieldModule, // Add MatFormFieldModule
+    MatInputModule, // Add MatInputModule
+    MatListModule, // Add MatListModule
+    MatChipsModule // Add MatChipsModule (useful for displaying skills)
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
@@ -41,6 +52,16 @@ export class DashboardComponent implements OnInit {
   applications: Application[] = [];
   interviews: Interview[] = [];
   upcomingInterviews: Interview[] = [];
+  skills: Skill[] = []; // Add skills array
+  certifications: Certification[] = []; // Add certifications array
+
+  // Properties for adding new skills/certs
+  newSkillName: string = '';
+  newCertificationName: string = '';
+  newCertificationOrg: string = ''; // Added
+  newCertificationDate: string = '';
+  newCertificationExpiry: string = ''; // Added
+  newCertificationCredentialId: string = ''; // Added
 
   jobs: JobListing[] = [];
   displayedColumnsJobs: string[] = ['title', 'jobType', 'salary', 'action'];
@@ -117,12 +138,16 @@ carouselOptions: OwlOptions = {
         console.log("User authenticated:", user.firstName, user.lastName, "ID:", user.id);
         this.loadStudentApplications(user.id);
         this.loadStudentInterviews(user.id);
+        this.loadStudentSkills(user.id.toString()); // Load skills
+        this.loadStudentCertifications(user.id.toString()); // Load certifications
         this.updatePaginatedData();
       } else {
         console.log("No authenticated user found");
         this.applications = [];
         this.interviews = [];
         this.upcomingInterviews = [];
+        this.skills = []; // Clear skills if no user
+        this.certifications = []; // Clear certifications if no user
         this.updatePaginatedData();
       }
     });
@@ -547,5 +572,144 @@ carouselOptions: OwlOptions = {
     });
   }
 
+  // --- Skills Methods ---
+
+  private loadStudentSkills(studentId: string): void {
+    this.apiService.getStudentSkills(studentId).subscribe({
+      next: (data) => {
+        this.skills = data;
+        console.log("Skills loaded:", this.skills);
+      },
+      error: (err) => {
+        console.error('Error loading skills:', err);
+        this.snackBar.open('Failed to load skills.', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  addSkill(): void {
+    const user = this.authService.currentUser;
+    if (!user || !this.newSkillName.trim()) {
+      this.snackBar.open('Skill name cannot be empty.', 'Close', { duration: 3000 });
+      return;
+    }
+
+    const skillData = { name: this.newSkillName.trim() };
+    this.apiService.addStudentSkill(user.id.toString(), skillData).subscribe({
+      next: (newSkill) => {
+        this.skills.push(newSkill);
+        this.newSkillName = ''; // Clear input
+        this.snackBar.open('Skill added successfully!', 'Close', { duration: 3000 });
+        console.log("Skill added:", newSkill);
+      },
+      error: (err) => {
+        console.error('Error adding skill:', err);
+        this.snackBar.open('Failed to add skill.', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  deleteSkill(skillId: number): void {
+    const user = this.authService.currentUser;
+    if (!user) return;
+
+    if (confirm('Are you sure you want to delete this skill?')) {
+      this.apiService.deleteStudentSkill(user.id.toString(), skillId).subscribe({
+        next: () => {
+          this.skills = this.skills.filter(skill => skill.skillId !== skillId);
+          this.snackBar.open('Skill deleted successfully.', 'Close', { duration: 3000 });
+          console.log("Skill deleted:", skillId);
+        },
+        error: (err) => {
+          console.error('Error deleting skill:', err);
+          this.snackBar.open('Failed to delete skill.', 'Close', { duration: 3000 });
+        }
+      });
+    }
+  }
+
+  // --- Certifications Methods ---
+
+  private loadStudentCertifications(studentId: string): void {
+    this.apiService.getStudentCertifications(studentId).subscribe({
+      next: (data) => {
+        this.certifications = data;
+        console.log("Certifications loaded:", this.certifications);
+      },
+      error: (err) => {
+        console.error('Error loading certifications:', err);
+        this.snackBar.open('Failed to load certifications.', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  addCertification(): void {
+    const user = this.authService.currentUser;
+    // Updated validation to include issuing organization
+    if (!user || !this.newCertificationName.trim() || !this.newCertificationOrg.trim() || !this.newCertificationDate) {
+       this.snackBar.open('Certification name, issuing organization, and date cannot be empty.', 'Close', { duration: 3000 });
+      return;
+    }
+
+    // Construct the full payload matching CertificationRequestDTO
+    const certData: any = { // Use 'any' or create a specific frontend model if preferred
+      name: this.newCertificationName.trim(),
+      issuingOrganization: this.newCertificationOrg.trim(),
+      certificationDate: this.newCertificationDate // Assuming YYYY-MM-DD format from type="date" input
+    };
+
+    // Add optional fields if they have values
+    if (this.newCertificationExpiry) {
+      certData.expiryDate = this.newCertificationExpiry;
+    }
+    if (this.newCertificationCredentialId.trim()) {
+      // Backend expects Integer, but let's send string and let backend handle parsing if needed, or adjust DTO
+      // For now, sending as string based on input type. If backend fails, adjust DTO or parse here.
+      certData.credentialId = this.newCertificationCredentialId.trim();
+    }
+
+
+    this.apiService.addStudentCertification(user.id.toString(), certData).subscribe({
+      next: (newCert) => {
+        this.certifications.push(newCert);
+        // Clear all related inputs
+        this.newCertificationName = '';
+        this.newCertificationOrg = '';
+        this.newCertificationDate = '';
+        this.newCertificationExpiry = '';
+        this.newCertificationCredentialId = '';
+        this.snackBar.open('Certification added successfully!', 'Close', { duration: 3000 });
+        console.log("Certification added:", newCert);
+      },
+      error: (err) => {
+        console.error('Error adding certification:', err);
+        // Provide more specific feedback if possible (e.g., check err.status)
+        let errorMessage = 'Failed to add certification.';
+        if (err.status === 400) {
+          errorMessage = 'Failed to add certification. Please check the input data (especially dates).';
+        }
+        this.snackBar.open(errorMessage, 'Close', { duration: 5000 });
+      }
+    });
+  }
+
+  deleteCertification(certificationId: number): void {
+    const user = this.authService.currentUser;
+    if (!user) return;
+
+    if (confirm('Are you sure you want to delete this certification?')) {
+      this.apiService.deleteStudentCertification(user.id.toString(), certificationId).subscribe({
+        next: () => {
+          this.certifications = this.certifications.filter(cert => cert.certificationId !== certificationId);
+          this.snackBar.open('Certification deleted successfully.', 'Close', { duration: 3000 });
+          console.log("Certification deleted:", certificationId);
+        },
+        error: (err) => {
+          console.error('Error deleting certification:', err);
+          this.snackBar.open('Failed to delete certification.', 'Close', { duration: 3000 });
+        }
+      });
+    }
+  }
 
 }

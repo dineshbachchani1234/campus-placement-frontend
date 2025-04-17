@@ -570,3 +570,61 @@ mat-card-content {
   max-width: 90vw !important;
   width: 1200px;
 }
+
+/* Styles for Skills and Certifications Sections */
+.empty-state {
+  color: #757575; /* Grey text */
+  padding: 16px;
+  text-align: center;
+  font-style: italic;
+}
+
+.add-item-form {
+  display: flex;
+  align-items: flex-start; /* Align items to the top */
+  gap: 16px; /* Space between form fields and button */
+  margin-top: 24px; /* Space above the form */
+  padding-top: 16px;
+  border-top: 1px solid #eee; /* Separator line */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.add-item-form mat-form-field {
+  flex-grow: 1; /* Allow form fields to take available space */
+  min-width: 200px; /* Minimum width for fields */
+}
+
+.add-item-form button {
+  margin-top: 8px; /* Align button nicely with fields */
+  height: 56px; /* Match typical filled form field height */
+}
+
+/* Skills specific styles */
+.skill-chips {
+  padding: 8px 0;
+}
+
+.skill-chip {
+  margin: 4px !important; /* Add spacing around chips */
+}
+
+/* Certifications specific styles */
+.certification-list {
+  padding-top: 0;
+}
+
+.certification-list .mat-mdc-list-item {
+  height: auto !important; /* Allow items to grow */
+  padding: 12px 0 !important;
+}
+
+.certification-list .mat-mdc-list-item-unscoped-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.certification-list .mat-mdc-list-item .mat-icon-button {
+  margin-left: 16px;
+}

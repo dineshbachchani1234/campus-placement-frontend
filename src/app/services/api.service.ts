@@ -8,9 +8,12 @@ import { JwtAuthResponse } from '../models/jwt-auth-response.model';
 import { CareerFair } from '../models/careerfair.model';
 import { Application, JobListing } from '../models/application.model';
 import { Interview } from '../models/interview.model';
+import { Student } from '../models/student.model'; // Added Student import
 import { InterviewExperience } from '../models/interview-experience.model';
 import { Sponsor } from '../models/sponsor.model';
 import { CampusEvent } from '../models/campus-event.model';
+import { Skill } from '../models/skill.model';
+import { Certification } from '../models/certification.model';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +50,22 @@ export class ApiService {
     );
   }
 
+  // --- New methods for Recruiter Dashboard ---
+
+  /** Fetches student details for all applicants of a specific job */
+  getApplicantsForJob(jobId: string): Observable<Student[]> {
+    // Assuming backend endpoint is /api/jobs/{jobId}/applicants
+    return this.http.get<Student[]>(`${this.baseUrl}/jobs/${jobId}/applicants`);
+  }
+
+  /** Schedules a new interview */
+  // Updated parameter type to include recruiterId
+  scheduleInterview(interviewData: { jobId: number; studentId: number; recruiterId: number; dateTime: string; notes?: string }): Observable<Interview> {
+    // Assuming backend endpoint is /api/interviews
+    return this.http.post<Interview>(`${this.baseUrl}/interviews`, interviewData);
+  }
+
+  // --- End of new methods ---
 
 
   // API call for fetching list of jobs
@@ -182,6 +201,35 @@ export class ApiService {
 
   checkEmailAvailability(email: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/auth/check-email?email=${encodeURIComponent(email)}`);
+  }
+
+  // --- Student Skills ---
+
+  getStudentSkills(studentId: string): Observable<Skill[]> {
+    return this.http.get<Skill[]>(`${this.baseUrl}/students/${studentId}/skills`);
+  }
+
+  addStudentSkill(studentId: string, skillData: { name: string, description?: string }): Observable<Skill> {
+    return this.http.post<Skill>(`${this.baseUrl}/students/${studentId}/skills`, skillData);
+  }
+
+  deleteStudentSkill(studentId: string, skillId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/students/${studentId}/skills/${skillId}`);
+  }
+
+  // --- Student Certifications ---
+
+  getStudentCertifications(studentId: string): Observable<Certification[]> {
+    return this.http.get<Certification[]>(`${this.baseUrl}/students/${studentId}/certifications`);
+  }
+
+  // Updated certData type to 'any' to allow sending the full DTO object
+  addStudentCertification(studentId: string, certData: any): Observable<Certification> {
+    return this.http.post<Certification>(`${this.baseUrl}/students/${studentId}/certifications`, certData);
+  }
+
+  deleteStudentCertification(studentId: string, certificationId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/students/${studentId}/certifications/${certificationId}`);
   }
 
 }
