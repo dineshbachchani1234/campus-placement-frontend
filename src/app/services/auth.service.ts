@@ -56,6 +56,7 @@ export class AuthService {
 
   login(user: User) {
     console.log('Setting user in login:', user);
+    console.log('Login response:', user);
     if (typeof localStorage !== 'undefined') {
       // Store individual properties
       localStorage.setItem('userId', user.id.toString());

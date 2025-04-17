@@ -229,8 +229,8 @@
         <ng-container matColumnDef="applicantName">
           <th mat-header-cell *matHeaderCellDef>Applicant</th>
           <td mat-cell *matCellDef="let a">
-            <div class="applicant-name">{{ a.firstName }} {{ a.lastName }}</div>
-            <div class="applicant-meta">{{ a.university }}</div>
+            <div class="applicant-name">{{ a.user.firstName }} {{ a.user.lastName }}</div>
+            <div class="applicant-meta">{{ a.user.university }}</div>
           </td>
         </ng-container>
 
@@ -238,7 +238,7 @@
         <ng-container matColumnDef="applicantEmail">
           <th mat-header-cell *matHeaderCellDef>Contact</th>
           <td mat-cell *matCellDef="let a">
-            <div>{{ a.email }}</div>
+            <div>{{ a.user.email }}</div>
             <div *ngIf="a.gpa" class="applicant-meta">GPA: {{ a.gpa }}</div>
           </td>
         </ng-container>
