@@ -1,21 +1,29 @@
 <nav class="navbar">
+  <div class="container">
+    <!-- Brand / Logo -->
     <div class="navbar-brand">
-      <a routerLink="/">Campus Placement</a>
+      <a routerLink="/">Campus Placement Portal</a>
     </div>
+
+    <!-- Links -->
     <div class="navbar-links">
       <ul>
-        <li><a routerLink="/">Home</a></li>
-        <!-- Add other common links here -->
-  
+        <!-- Common Links -->
+        <li><a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a></li>
+        <li><a routerLink="/job-list" routerLinkActive="active-link">Jobs</a></li>
+        <!-- Add other common links if needed -->
+
+        <!-- User Specific Links -->
         <ng-container *ngIf="isLoggedIn; else loggedOutLinks">
-          <li><span>Welcome, {{ userName }}</span></li>
+          <li><span class="welcome-text">Hi, {{ userName }}</span></li>
           <li><button (click)="logout()" class="logout-button">Logout</button></li>
         </ng-container>
-  
+
         <ng-template #loggedOutLinks>
           <li><a routerLink="/login">Login</a></li>
           <li><a routerLink="/register">Register</a></li>
         </ng-template>
       </ul>
     </div>
-  </nav>
+  </div>
+</nav>
