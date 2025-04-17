@@ -364,7 +364,7 @@
 
       <mat-chip-listbox *ngIf="skills.length > 0" aria-label="Skills list" class="skill-chips">
         <mat-chip-option *ngFor="let skill of skills" class="skill-chip">
-          {{ skill.name }}
+          {{ skill.skillName }}
           <button matChipRemove (click)="deleteSkill(skill.skillId)">
             <mat-icon>cancel</mat-icon>
           </button>

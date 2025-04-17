@@ -378,12 +378,15 @@ carouselOptions: OwlOptions = {
   }
 
   withdrawApplication(application: Application): void {
+    const user = this.authService.currentUser;
+    if (!user) return;  // not logged in
     if (!application || !application.applicationId) {
       this.snackBar.open('Cannot withdraw application: Invalid application', 'Close', {
         duration: 3000,
         horizontalPosition: 'center',
         verticalPosition: 'top',
       });
+     
       return;
     }
     
@@ -408,6 +411,7 @@ carouselOptions: OwlOptions = {
             horizontalPosition: 'center',
             verticalPosition: 'top',
           });
+          this.loadStudentApplications(user.id);
         },
         error: err => {
           console.error('Error withdrawing application:', err);

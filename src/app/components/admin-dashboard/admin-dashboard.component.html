@@ -35,7 +35,7 @@
         <mat-label>Participating Companies</mat-label>
         <mat-chip-grid #companyChipGrid aria-label="Company selection">
           <mat-chip-row *ngFor="let company of selectedCompanies" (removed)="removeCompany(company)">
-            {{ company.name }}
+            {{ company.companyName }}
             <button matChipRemove aria-label="'remove ' + company.name">
               <mat-icon>cancel</mat-icon>
             </button>
@@ -52,7 +52,7 @@
         />
         <mat-autocomplete #autoCompany="matAutocomplete" (optionSelected)="selectedCompany($event)">
            <mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
-             {{ company.name }}
+             {{ company.companyName }}
            </mat-option>
         </mat-autocomplete>
       </mat-form-field>
