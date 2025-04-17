@@ -57,6 +57,19 @@
           <th mat-header-cell *matHeaderCellDef>Deadline</th>
           <td mat-cell *matCellDef="let application">{{formatDate(application.job?.deadline)}}</td>
         </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let application">
+            <button 
+              mat-button 
+              color="warn" 
+              [disabled]="application.status === ApplicationStatus.ACCEPTED" 
+              (click)="withdrawApplication(application)">
+              Withdraw
+            </button>
+          </td>
+        </ng-container>
         
         <tr mat-header-row *matHeaderRowDef="displayedColumnsApplications"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsApplications;"></tr>
@@ -126,9 +139,32 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let interview">
-            <button *ngIf="interview.status === InterviewStatus.COMPLETED" mat-button color="primary" class="action-button">
-              Add Experience
+            <button 
+              *ngIf="interview.status === InterviewStatus.COMPLETED" 
+              mat-button 
+              color="primary" 
+              class="action-button"
+              (click)="addInterviewExperience(interview)">
+              <span class="material-icons">rate_review</span>
+              Share Experience
             </button>
+            
+            <button 
+              *ngIf="interview.status === InterviewStatus.SCHEDULED" 
+              mat-button  
+              color="accent" 
+              class="action-button" 
+              disabled>
+              <span class="material-icons">event</span>
+              Scheduled
+            </button>
+            
+            <span 
+              *ngIf="interview.status === InterviewStatus.CANCELLED" 
+              class="cancelled-badge">
+              <span class="material-icons">event_busy</span>
+              Cancelled
+            </span>
           </td>
         </ng-container>
         

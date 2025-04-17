@@ -1,0 +1,30 @@
+.experience-dialog {
+    min-width: 320px;
+    max-width: 600px;
+  }
+  
+  .full-width {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  .interview-details {
+    background-color: #f5f5f5;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  
+  .interview-details p {
+    margin: 8px 0;
+  }
+  
+  textarea {
+    min-height: 120px;
+  }
+  
+  mat-dialog-actions {
+    margin-top: 16px;
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e0;
+  }

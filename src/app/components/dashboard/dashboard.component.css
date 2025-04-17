@@ -191,3 +191,30 @@ tr.mat-row:hover {
   line-height: 28px;
   padding: 0 12px;
 }
+
+/* Add these styles for the actions column buttons */
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button .material-icons {
+  margin-right: 4px;
+  font-size: 18px;
+}
+
+.cancelled-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  color: #757575;
+  font-size: 14px;
+}
+
+.cancelled-badge .material-icons {
+  font-size: 16px;
+  margin-right: 4px;
+}
