@@ -1,52 +1,79 @@
+/* Header Styles (similar to footer) */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f8f9fa;
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid #dee2e6;
-  }
-  
-  .navbar-brand a {
-    font-weight: bold;
-    text-decoration: none;
-    color: #333;
-  }
-  
-  .navbar-links ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-  }
-  
-  .navbar-links li {
-    margin-left: 1rem;
-  }
-  
-  .navbar-links a, .navbar-links span {
-    text-decoration: none;
-    color: #007bff;
-  }
-  .navbar-links span {
-    color: #555;
-    margin-right: 5px;
-  }
-  
-  .navbar-links a:hover {
-    text-decoration: underline;
-  }
-  
-  .logout-button {
-    background: none;
-    border: none;
-    color: #dc3545;
-    cursor: pointer;
-    padding: 0;
-    font-size: inherit; /* Match link font size */
-  }
-  
-  .logout-button:hover {
-    text-decoration: underline;
-  }
+  background-color: #343a40; /* Dark background */
+  color: #adb5bd; /* Light grey text */
+  padding: 0.75rem 0; /* Adjusted padding for header */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle bottom shadow */
+  position: sticky; /* Keep header sticky */
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar .container {
+  max-width: 1140px; /* Constrain width */
+  margin: 0 auto; /* Center container */
+  padding: 0 15px; /* Padding inside container */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Brand / Logo */
+.navbar-brand a {
+  color: #ffffff; /* White brand text */
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Links Area */
+.navbar-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-links li {
+  margin-left: 1rem; /* Spacing between list items */
+}
+
+/* General Link Styling */
+.navbar-links a,
+.navbar-links .logout-button {
+  color: #ffffff; /* White links/button text */
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+  padding: 0.25rem 0.5rem; /* Add some padding for better click area */
+  border-radius: 4px; /* Slightly rounded corners */
+}
+
+/* Hover effect for links and logout button */
+.navbar-links a:hover,
+.navbar-links .logout-button:hover {
+  color: #dee2e6; /* Lighter grey on hover */
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+}
+
+/* Active route link style */
+.navbar-links a.active-link {
+  font-weight: bold; /* Make active link bold */
+  background-color: rgba(255, 255, 255, 0.15); /* Slightly stronger background */
+}
+
+/* Welcome Text */
+.navbar-links .welcome-text {
+  color: #adb5bd; /* Match default text color */
+  margin-right: 0.5rem; /* Space before logout button */
+  padding: 0.25rem 0.5rem; /* Align padding with links */
+}
+
+/* Logout Button Specifics (if needed beyond link styling) */
+.navbar-links .logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit; /* Match font */
+  font-size: inherit; /* Match font size */
+}

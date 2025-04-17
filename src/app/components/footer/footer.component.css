@@ -1,0 +1,32 @@
+/* Footer Styles */
+.footer {
+  background-color: #343a40; /* Matching header background */
+  color: #adb5bd; /* Light grey text */
+  padding: 1.5rem 0; /* Padding top and bottom */
+  margin-top: auto; /* Helps push footer down on short pages, may need additional global styles */
+  text-align: center;
+  font-size: 0.9rem;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Subtle top shadow */
+}
+
+.footer .container {
+  max-width: 1140px; /* Optional: constrain width */
+  margin: 0 auto; /* Center container */
+  padding: 0 15px; /* Padding inside container */
+}
+
+.footer p {
+  margin: 0; /* Remove default paragraph margin */
+}
+
+.footer a {
+  color: #ffffff; /* White links */
+  text-decoration: none;
+  margin: 0 0.5rem; /* Spacing between links */
+  transition: color 0.2s ease-in-out;
+}
+
+.footer a:hover {
+  color: #dee2e6; /* Lighter grey on hover */
+  text-decoration: underline;
+}
