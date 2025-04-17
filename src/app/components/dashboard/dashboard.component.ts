@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ChangeDetectorRef } from '@angular/core'; // Import ChangeDetectorRef
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { MatCardModule } from '@angular/material/card';
@@ -122,10 +122,11 @@ carouselOptions: OwlOptions = {
   jobsPageIndex: number = 0;
   paginatedJobs: JobListing[] = [];
 
-  constructor(private apiService: ApiService, private authService: AuthService, 
+  constructor(private apiService: ApiService, private authService: AuthService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private interviewExperienceService: InterviewExperienceService) {}
+    private interviewExperienceService: InterviewExperienceService,
+    private changeDetectorRef: ChangeDetectorRef) {} // Inject ChangeDetectorRef
 
   ngOnInit(): void {
     this.loadCareerFairs();
@@ -140,7 +141,7 @@ carouselOptions: OwlOptions = {
         this.loadStudentInterviews(user.id);
         this.loadStudentSkills(user.id.toString()); // Load skills
         this.loadStudentCertifications(user.id.toString()); // Load certifications
-        this.updatePaginatedData();
+        // Removed updatePaginatedData() call from here
       } else {
         console.log("No authenticated user found");
         this.applications = [];
@@ -149,6 +150,7 @@ carouselOptions: OwlOptions = {
         this.skills = []; // Clear skills if no user
         this.certifications = []; // Clear certifications if no user
         this.updatePaginatedData();
+        this.changeDetectorRef.detectChanges(); // Trigger change detection on logout/clear
       }
     });
   }
@@ -228,7 +230,7 @@ carouselOptions: OwlOptions = {
         console.log("Interviews loaded successfully, raw data:", JSON.stringify(data[0], null, 2));
         
         // Process each interview to make sure nested objects are properly handled
-        this.interviews = data.map(interview => {
+        const processedInterviews = data.map(interview => {
           // Check if we need to fix null nested objects
           if (interview && !interview.application?.job?.company && interview.application?.job) {
             console.log("Missing company in job, setting default");
@@ -240,9 +242,11 @@ carouselOptions: OwlOptions = {
           }
           return interview;
         });
+        this.interviews = [...processedInterviews]; // Assign using spread syntax for new array reference
         
         console.log("Processed interviews:", this.interviews);
-        this.updatePaginatedInterviews();
+        this.updatePaginatedInterviews(); // Moved inside next callback
+        this.changeDetectorRef.detectChanges(); // Trigger change detection
       },
       error: (err) => {
         console.error('Error loading interviews:', err);
@@ -257,7 +261,7 @@ carouselOptions: OwlOptions = {
         console.log("Applications loaded successfully, raw data:", JSON.stringify(data[0], null, 2));
         
         // Process each application to make sure nested objects are properly handled
-        this.applications = data.map(application => {
+        const processedApplications = data.map(application => {
           // Check if we need to fix null nested objects
           if (application && !application.job?.company && application.job) {
             console.log("Missing company in job, setting default");
@@ -269,10 +273,12 @@ carouselOptions: OwlOptions = {
           }
           return application;
         });
+        this.applications = [...processedApplications]; // Assign using spread syntax for new array reference
         this.markApplied();
         
         console.log("Processed applications:", this.applications);
-        this.updatePaginatedApplications(); 
+        this.updatePaginatedApplications(); // Moved inside next callback
+        this.changeDetectorRef.detectChanges(); // Trigger change detection
       },
       error: (err) => {
         console.error('Error loading applications:', err);

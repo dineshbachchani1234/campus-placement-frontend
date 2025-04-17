@@ -1,165 +1,123 @@
-.dashboard-card {
+/* recruiter-dashboard.component.css */
+
+/* CARDS */
+.dashboard-card,
+.job-form-card,
+.applicants-card {
   margin: 16px;
-  padding-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.spinner-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
+/* TABLE CONTAINERS */
+.table-container {
+  overflow-x: auto;
+  margin: 16px 0;
 }
 
-.loading-text {
-  margin-top: 16px;
-  color: rgba(0, 0, 0, 0.54);
-}
-
+/* STATES */
+.spinner-container,
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 24px;
-  text-align: center;
+  padding: 32px;
+  background: #fafafa;
+  border-radius: 8px;
 }
-
 .empty-icon {
   font-size: 48px;
-  height: 48px;
-  width: 48px;
-  color: rgba(0, 0, 0, 0.38);
+  color: #bbb;
   margin-bottom: 16px;
 }
-
-.table-container {
-  overflow-x: auto;
-  margin: 0 16px;
+.loading-text,
+.empty-state p {
+  color: #666;
 }
 
-.jobs-table {
+/* FORM GRID */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+/* FIELDS */
+.job-field {
   width: 100%;
+  max-width: 360px;
+  margin-bottom: 16px;
+}
+.job-field input.mat-input-element {
+  height: 40px;
+  padding: 8px;
+}
+.job-field textarea.mat-input-element {
+  min-height: 80px;
+  resize: vertical;
+}
+.small-field {
+  max-width: 160px;
+}
+.full-width {
+  max-width: 100%;
 }
 
-.applicant-count {
-  text-align: center;
+/* FORM ACTIONS */
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 16px;
 }
 
-.applicant-badge {
+/* ADD BUTTON */
+.add-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: 16px 0;
+}
+.add-button-container button {
+  min-width: 120px;
+}
+
+/* APPLICANTS CARD HEADER */
+.applicants-card mat-card-header {
+  background: #e8eaf6;
+  border-bottom: 1px solid #c5cae9;
+}
+
+/* APPLICANT CELLS */
+.applicant-name {
+  font-weight: 500;
+}
+.applicant-meta {
+  color: #757575;
+  font-size: 12px;
+}
+
+/* SCHEDULED LABEL */
+.scheduled-label {
   display: inline-block;
-  min-width: 24px;
-  height: 24px;
-  line-height: 24px;
+  padding: 4px 12px;
+  background: #4caf50;
+  color: #fff;
   border-radius: 12px;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.12);
-  color: rgba(0, 0, 0, 0.87);
-  padding: 0 8px;
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.has-applicants {
-  background-color: #3f51b5;
-  color: white;
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .job-field,
+  .small-field {
+    max-width: 100%;
+  }
 }
-
-/* Add some spacing between columns */
-th.mat-header-cell, td.mat-cell {
-  padding: 0 16px;
-}
-
-th.mat-header-cell:first-of-type, 
-td.mat-cell:first-of-type {
-  padding-left: 24px;
-}
-
-th.mat-header-cell:last-of-type, 
-td.mat-cell:last-of-type {
-  padding-right: 24px;
-}
-
-.mat-column-title {
-  min-width: 150px;
-}
-
-.mat-column-jobType {
-  min-width: 100px;
-}
-
-.mat-column-salary {
-  min-width: 100px;
-}
-
-.mat-column-applicantCount {
-  min-width: 80px;
-}
-
-.mat-column-actions {
-  min-width: 80px;
-  text-align: center;
-}
-
-.add-button-container {
-  margin: 1rem 0;
-}
-
-.add-job-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.add-job-form mat-form-field {
-  flex: 1 1 300px;
-}
-
-.form-actions {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-}
-
-/* recruiter-dashboard.component.css */
-.dashboard-card {
-  margin: 1rem;
-  padding: 1rem;
-}
-
-.spinner-container {
-  display: flex;
-  justify-content: center;
-  padding: 2rem;
-}
-
-.jobs-table {
-  width: 100%;
-  margin-bottom: 1rem;
-}
-
-.actions-cell button {
-  margin-right: 0.5rem;
-}
-
-.add-button-container {
-  margin: 1rem 0;
-}
-
-.add-job-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.add-job-form mat-form-field {
-  flex: 1 1 300px;
-}
-
-.form-actions {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
- 

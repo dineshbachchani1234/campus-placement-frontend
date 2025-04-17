@@ -40,6 +40,7 @@ export class LoginComponent {
     this.initForm();
   }
 
+
   initForm(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -72,24 +73,31 @@ export class LoginComponent {
           localStorage.setItem('userId', response.userId.toString());
           localStorage.setItem('email', response.email);
           localStorage.setItem('role', response.role);
+              if (response.role === 'RECRUITER') {
+                localStorage.setItem('companyId', response.companyId?.toString() ?? '');
+              }
           
-          console.log('ROLE:', response.role);
           
           this.snackBar.open('Welcome back! Login successful', 'Close', { 
             duration: 3000,
             panelClass: ['success-snackbar']
           });
-          
-          // Navigate based on role
-          if (response.role === 'STUDENT') {
-            this.router.navigate(['/dashboard']);
-          } else if (response.role === 'RECRUITER') {
-            localStorage.setItem('companyId', response.companyId?.toString() ?? '');
-            this.router.navigate(['/recruiter-dashboard']);
-          } else if (response.role === 'ADMIN') {
-            this.router.navigate(['/admin-dashboard']);
-          }
-        },
+
+        // 3) Single navigation call — no more manual refresh
+      if (response.role === 'STUDENT') {
+        this.router.navigateByUrl('/dashboard', { replaceUrl: true })
+  .then(() => window.location.replace('/dashboard'))
+          .catch(err => console.error('nav error', err));
+      } else if (response.role === 'RECRUITER') {
+        this.router.navigateByUrl('/recruiter-dashboard', { replaceUrl: true })
+        .then(() => window.location.replace('/recruiter-dashboard'))
+          .catch(err => console.error('nav error', err));
+      } else if (response.role === 'ADMIN') {
+        this.router.navigateByUrl('/admin-dashboard', { replaceUrl: true })
+        .then(() => window.location.replace('/admin-dashboard'))
+          .catch(err => console.error('nav error', err));
+      }
+    },
         error: (err) => {
           // Close loading snackbar
           loadingSnackBar.dismiss();
@@ -106,6 +114,7 @@ export class LoginComponent {
             panelClass: ['error-snackbar']
           });
         }
+
       });
     } else {
       // Mark all fields as touched to trigger validation messages

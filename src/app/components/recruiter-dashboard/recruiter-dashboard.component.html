@@ -1,3 +1,6 @@
+<!-- src/app/components/recruiter-dashboard/recruiter-dashboard.component.html -->
+
+<!-- Main Dashboard Card -->
 <mat-card class="dashboard-card">
   <mat-card-header>
     <mat-card-title>My Posted Jobs</mat-card-title>
@@ -6,324 +9,296 @@
     </mat-card-subtitle>
   </mat-card-header>
 
-
-  <!-- No jobs message -->
-  <mat-card-content *ngIf="jobs.length === 0" class="empty-state">
-    <mat-icon class="empty-icon">work_off</mat-icon>
-    <h3>No Jobs Posted</h3>
-    <p>You haven't posted any job listings yet.</p>
-    <!-- Optional: Add a button to create a new job -->
-    <!-- <button mat-raised-button color="primary">Post a New Job</button> -->
-  </mat-card-content>
-
-  <!-- Jobs table -->
-  <div class="table-container" *ngIf="!loading && jobs.length > 0">
-    <table mat-table [dataSource]="jobs" class="mat-elevation-z2 jobs-table">
-      <!-- Title -->
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let job">{{ job?.title || 'Untitled' }}</td>
-      </ng-container>
-
-      <!-- Type -->
-      <ng-container matColumnDef="jobType">
-        <th mat-header-cell *matHeaderCellDef>Type</th>
-        <td mat-cell *matCellDef="let job">{{ formatJobType(job.jobType) }}</td>
-      </ng-container>
-      <!-- Salary -->
-      <ng-container matColumnDef="salary">
-        <th mat-header-cell *matHeaderCellDef>Salary</th>
-        <td mat-cell *matCellDef="let job">{{ formatSalary(job?.salary) }}</td>
-      </ng-container>
-
-      <!-- Applicant Count -->
-      <ng-container matColumnDef="applicantCount">
-        <th mat-header-cell *matHeaderCellDef>Applicants</th>
-        <td mat-cell *matCellDef="let job" class="applicant-count">
-          <span class="applicant-badge" [ngClass]="{'has-applicants': job?.applicantCount > 0}">
-            {{ job?.applicantCount || 0 }}
-          </span>
-        </td>
-      </ng-container>
-
-      <!-- Actions -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let job">
-          <!-- view applicants -->
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="viewApplicants(job)"
-            matTooltip="View {{ job.applicantCount }} applicants">
-            <mat-icon>people</mat-icon>
-          </button>
-
-          <button
-          mat-icon-button
-          color="accent"
-          (click)="startEdit(job)"
-          matTooltip="Edit job">
-          <mat-icon>edit</mat-icon>
-        </button>
-      
-          <!-- delete job -->
-          <button
-            mat-icon-button
-            color="warn"
-            (click)="deleteJob(job)"
-            matTooltip="Delete job">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-  </div>
-</mat-card>
-
-<!-- Section to display applicants for the selected job -->
-<mat-card *ngIf="selectedJob" class="applicants-card mat-elevation-z2">
-  <mat-card-header>
-    <mat-card-title>Applicants for "{{ selectedJob.title }}"</mat-card-title>
-  </mat-card-header>
   <mat-card-content>
-    <!-- Loading spinner -->
-    <div *ngIf="loadingApplicants" class="spinner-container">
-      <mat-spinner diameter="50"></mat-spinner>
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="spinner-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p class="loading-text">Loading your job listings…</p>
     </div>
 
-    <!-- Empty state -->
+    <!-- No jobs message -->
+    <div *ngIf="!loading && jobs.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">work_off</mat-icon>
+      <h3>No Jobs Posted</h3>
+      <p>You haven't posted any jobs yet. Click “Add Job” to create one.</p>
+    </div>
+
+    <!-- Jobs table -->
+    <div *ngIf="!loading && jobs.length > 0" class="table-container">
+      <table mat-table [dataSource]="jobs" class="mat-elevation-z2 jobs-table">
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let job">{{ job.title || 'Untitled' }}</td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="jobType">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let job">{{ formatJobType(job.jobType) }}</td>
+        </ng-container>
+
+        <!-- Salary Column -->
+        <ng-container matColumnDef="salary">
+          <th mat-header-cell *matHeaderCellDef>Salary</th>
+          <td mat-cell *matCellDef="let job">{{ formatSalary(job.salary) }}</td>
+        </ng-container>
+
+        <!-- Applicants Count -->
+        <ng-container matColumnDef="applicantCount">
+          <th mat-header-cell *matHeaderCellDef>Applicants</th>
+          <td mat-cell *matCellDef="let job" class="applicant-count">
+            <span class="applicant-badge" [ngClass]="{'has-applicants': job.applicantCount > 0}">
+              {{ job.applicantCount }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let job">
+            <button mat-icon-button color="primary" (click)="viewApplicants(job)" matTooltip="View applicants">
+              <mat-icon>people</mat-icon>
+            </button>
+            <button mat-icon-button color="accent" (click)="startEdit(job)" matTooltip="Edit job">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteJob(job)" matTooltip="Delete job">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Add Job CTA -->
+<div class="add-button-container">
+  <button mat-raised-button color="primary" (click)="toggleAddForm()">
+    <mat-icon>{{ showAddForm ? 'close' : 'add' }}</mat-icon>
+    {{ showAddForm ? 'Cancel' : 'Add Job' }}
+  </button>
+</div>
+
+<!-- Add Job Form -->
+<mat-card *ngIf="showAddForm && !editingJobId" class="job-form-card">
+  <mat-card-header>
+    <mat-card-title>Add New Job</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form (ngSubmit)="addJob()" #addJobForm="ngForm" class="form-grid">
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Title</mat-label>
+        <input matInput name="addTitle" required [(ngModel)]="newJob.title" placeholder="e.g. Software Engineer" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          name="addDescription"
+          rows="3"
+          required
+          [(ngModel)]="newJob.description"
+          placeholder="Job responsibilities and requirements"
+        ></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Salary</mat-label>
+        <span matPrefix>$&nbsp;</span>
+        <input
+          matInput
+          type="number"
+          name="addSalary"
+          required
+          [(ngModel)]="newJob.salary"
+          placeholder="Annual salary"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Job Type</mat-label>
+        <mat-select name="addJobType" required [(ngModel)]="newJob.jobType">
+          <mat-option *ngFor="let jt of jobTypes" [value]="jt">
+            {{ formatJobType(jt) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Application Deadline</mat-label>
+        <input matInput type="date" name="addDeadline" required [(ngModel)]="newJob.deadline" />
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancelAddForm()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="addJobForm.invalid">
+          Add Job
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<!-- Edit Job Form -->
+<mat-card *ngIf="editingJobId !== null" class="job-form-card">
+  <mat-card-header>
+    <mat-card-title>Edit Job</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form (ngSubmit)="updateJob()" #editJobForm="ngForm" class="form-grid">
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Title</mat-label>
+        <input matInput name="editTitle" required [(ngModel)]="editJob.title" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          name="editDescription"
+          rows="3"
+          required
+          [(ngModel)]="editJob.description"
+        ></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Salary</mat-label>
+        <span matPrefix>$&nbsp;</span>
+        <input matInput type="number" name="editSalary" required [(ngModel)]="editJob.salary" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Job Type</mat-label>
+        <mat-select name="editJobType" required [(ngModel)]="editJob.jobType">
+          <mat-option *ngFor="let jt of jobTypes" [value]="jt">
+            {{ formatJobType(jt) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="job-field">
+        <mat-label>Application Deadline</mat-label>
+        <input matInput type="date" name="editDeadline" required [(ngModel)]="editJob.deadline" />
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="editJobForm.invalid">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<!-- Applicants Section -->
+<mat-card *ngIf="selectedJob" class="applicants-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>people</mat-icon>
+      Applicants for “{{ selectedJob.title }}”
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- Loading / Empty States -->
+    <div *ngIf="loadingApplicants" class="spinner-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p class="loading-text">Loading applicants…</p>
+    </div>
+
     <div *ngIf="!loadingApplicants && applicants.length === 0" class="empty-state">
       <mat-icon class="empty-icon">person_search</mat-icon>
-      <h3>No Applicants Found</h3>
-      <p>There are currently no applicants for this job.</p>
+      <h3>No Applicants</h3>
+      <p>There are no applicants for this job yet.</p>
     </div>
 
     <!-- Applicants Table -->
-    <div class="table-container" *ngIf="!loadingApplicants && applicants.length > 0">
-      <table mat-table [dataSource]="applicants" class="applicants-table">
+    <div *ngIf="!loadingApplicants && applicants.length > 0" class="table-container">
+      <table mat-table [dataSource]="applicants" class="mat-elevation-z2 applicants-table">
 
         <!-- Name Column -->
         <ng-container matColumnDef="applicantName">
-          <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let applicant"> {{applicant.firstName}} {{applicant.lastName}} </td>
+          <th mat-header-cell *matHeaderCellDef>Applicant</th>
+          <td mat-cell *matCellDef="let a">
+            <div class="applicant-name">{{ a.firstName }} {{ a.lastName }}</div>
+            <div class="applicant-meta">{{ a.university }}</div>
+          </td>
         </ng-container>
 
         <!-- Email Column -->
         <ng-container matColumnDef="applicantEmail">
-          <th mat-header-cell *matHeaderCellDef> Email </th>
-          <td mat-cell *matCellDef="let applicant"> {{applicant.email}} </td>
+          <th mat-header-cell *matHeaderCellDef>Contact</th>
+          <td mat-cell *matCellDef="let a">
+            <div>{{ a.email }}</div>
+            <div *ngIf="a.gpa" class="applicant-meta">GPA: {{ a.gpa }}</div>
+          </td>
         </ng-container>
 
         <!-- Actions Column -->
         <ng-container matColumnDef="applicantActions">
-          <th mat-header-cell *matHeaderCellDef> Actions </th>
-          <td mat-cell *matCellDef="let applicant">
-            <button mat-button color="primary" (click)="openScheduleInterviewForm(applicant)">
-              Schedule Interview
-            </button>
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let a">
+            <!-- Show button or scheduled label -->
+            <ng-container *ngIf="!a.interviewScheduled; else doneTpl">
+              <button
+                mat-stroked-button
+                color="primary"
+                (click)="openScheduleInterviewForm(a)"
+                [disabled]="showInterviewFormForApplicant === a"
+              >
+                <mat-icon>event</mat-icon> Schedule Interview
+              </button>
+            </ng-container>
+            <ng-template #doneTpl>
+              <span class="scheduled-label">Interview Scheduled</span>
+            </ng-template>
 
-            <!-- Interview Scheduling Form (Inline) -->
-            <div *ngIf="showInterviewFormForApplicant === applicant" class="interview-form">
-              <h4>Schedule Interview for {{ applicant.firstName }}</h4>
-              <mat-form-field appearance="fill">
+            <!-- Inline Interview Form -->
+            <div *ngIf="showInterviewFormForApplicant === a" class="interview-form">
+              <h4>Schedule with {{ a.firstName }}</h4>
+              
+              <mat-form-field appearance="outline" class="job-field small-field">
                 <mat-label>Date</mat-label>
-                <input matInput type="date" name="interviewDate-{{applicant.studentId}}" [(ngModel)]="interviewDetails.date" required>
+                <input matInput type="date" [(ngModel)]="interviewDetails.date" required />
               </mat-form-field>
-              <mat-form-field appearance="fill">
+
+              <mat-form-field appearance="outline" class="job-field small-field">
                 <mat-label>Time</mat-label>
-                <input matInput type="time" name="interviewTime-{{applicant.studentId}}" [(ngModel)]="interviewDetails.time" required>
+                <input matInput type="time" [(ngModel)]="interviewDetails.time" required />
               </mat-form-field>
-              <mat-form-field appearance="fill">
+
+              <mat-form-field appearance="outline" class="job-field full-width">
                 <mat-label>Notes (Optional)</mat-label>
-                <textarea matInput name="interviewNotes-{{applicant.studentId}}" [(ngModel)]="interviewDetails.notes"></textarea>
+                <textarea matInput rows="2" [(ngModel)]="interviewDetails.notes"></textarea>
               </mat-form-field>
+
               <div class="form-actions">
-                <button mat-flat-button color="accent" (click)="submitScheduleInterview()" [disabled]="!interviewDetails.date || !interviewDetails.time">
-                  Submit Schedule
-                </button>
-                <button mat-button type="button" (click)="cancelScheduleInterview()">
-                  Cancel
+                <button mat-button (click)="cancelScheduleInterview()">Cancel</button>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  [disabled]="!interviewDetails.date || !interviewDetails.time"
+                  (click)="submitScheduleInterview()"
+                >
+                  Schedule
                 </button>
               </div>
             </div>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="['applicantName', 'applicantEmail', 'applicantActions']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['applicantName', 'applicantEmail', 'applicantActions'];"></tr>
+        <tr mat-header-row *matHeaderRowDef="['applicantName','applicantEmail','applicantActions']"></tr>
+        <tr mat-row        *matRowDef="let r; columns:['applicantName','applicantEmail','applicantActions']"></tr>
       </table>
     </div>
   </mat-card-content>
 </mat-card>
-<!-- End of Applicants Section -->
-
-
-<div class="add-button-container">
-  <button mat-flat-button color="primary" (click)="toggleAddForm()">
-    {{ showAddForm ? 'Cancel' : 'Add Job' }}
-  </button>
-</div>
-<form
-  *ngIf="showAddForm && !editingJobId"
-  (ngSubmit)="addJob()"
-  #addJobForm="ngForm"
-  class="add-job-form"
->
-  <h2>Add New Job</h2>
-  
-  <!-- TITLE -->
-  <mat-form-field appearance="fill">
-    <mat-label>Title</mat-label>
-    <input
-      matInput
-      name="addTitle"
-      required
-      [(ngModel)]="newJob.title"
-    />
-  </mat-form-field>
-
-  <!-- DESCRIPTION -->
-  <mat-form-field appearance="fill">
-    <mat-label>Description</mat-label>
-    <textarea
-      matInput
-      name="addDescription"
-      rows="3"
-      required
-      [(ngModel)]="newJob.description"
-    ></textarea>
-  </mat-form-field>
-
-  <!-- SALARY -->
-  <mat-form-field appearance="fill">
-    <mat-label>Salary</mat-label>
-    <input
-      matInput
-      type="number"
-      name="addSalary"
-      required
-      [(ngModel)]="newJob.salary"
-    />
-  </mat-form-field>
-
-  <!-- JOB TYPE -->
-  <mat-form-field appearance="fill">
-    <mat-label>Job Type</mat-label>
-    <mat-select
-      name="addJobType"
-      required
-      [(ngModel)]="newJob.jobType"
-    >
-      <mat-option *ngFor="let jt of jobTypes" [value]="jt">
-        {{ jt.replace('_', ' ') | titlecase }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <!-- DEADLINE -->
-  <mat-form-field appearance="fill">
-    <mat-label>Deadline</mat-label>
-    <input
-      matInput
-      type="date"
-      name="addDeadline"
-      required
-      [(ngModel)]="newJob.deadline"
-    />
-  </mat-form-field>
-
-  <!-- ADD FORM ACTIONS -->
-  <div class="form-actions">
-    <button mat-flat-button color="accent" type="submit" [disabled]="addJobForm.invalid">
-      Submit
-    </button>
-    <button mat-button type="button" (click)="cancelAddForm()">
-      Cancel
-    </button>
-  </div>
-</form>
-
-<!-- Edit Job Form - Completely separate form -->
-<form
-  *ngIf="editingJobId !== null"
-  (ngSubmit)="updateJob()"
-  #editJobForm="ngForm"
-  class="edit-job-form"
->
-  <h2>Edit Job</h2>
-  
-  <!-- TITLE -->
-  <mat-form-field appearance="fill">
-    <mat-label>Title</mat-label>
-    <input
-      matInput
-      name="editTitle"
-      required
-      [(ngModel)]="editJob.title"
-    />
-  </mat-form-field>
-
-  <!-- DESCRIPTION -->
-  <mat-form-field appearance="fill">
-    <mat-label>Description</mat-label>
-    <textarea
-      matInput
-      name="editDescription"
-      rows="3"
-      required
-      [(ngModel)]="editJob.description"
-    ></textarea>
-  </mat-form-field>
-
-  <!-- SALARY -->
-  <mat-form-field appearance="fill">
-    <mat-label>Salary</mat-label>
-    <input
-      matInput
-      type="number"
-      name="editSalary"
-      required
-      [(ngModel)]="editJob.salary"
-    />
-  </mat-form-field>
-
-  <!-- JOB TYPE -->
-  <mat-form-field appearance="fill">
-    <mat-label>Job Type</mat-label>
-    <mat-select
-      name="editJobType"
-      required
-      [(ngModel)]="editJob.jobType"
-    >
-      <mat-option *ngFor="let jt of jobTypes" [value]="jt">
-        {{ jt.replace('_', ' ') | titlecase }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <!-- DEADLINE -->
-  <mat-form-field appearance="fill">
-    <mat-label>Deadline</mat-label>
-    <input
-      matInput
-      type="date"
-      name="editDeadline"
-      required
-      [(ngModel)]="editJob.deadline"
-    />
-  </mat-form-field>
-
-  <!-- EDIT FORM ACTIONS -->
-  <div class="form-actions">
-    <button mat-flat-button color="accent" type="submit" [disabled]="editJobForm.invalid">
-      Save Changes
-    </button>
-    <button mat-button type="button" (click)="cancelEdit()">
-      Cancel
-    </button>
-  </div>
-</form>

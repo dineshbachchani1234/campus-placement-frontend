@@ -81,31 +81,47 @@ export class RecruiterDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const user = this.auth.currentUser;
-    if (!user) {
-      this.loading = false;
-      this.snackBar.open('Not authenticated', 'Close', { duration: 3000 });
-      return;
-    }
+    this.auth.currentUser$.subscribe(user => {
+      this.loading = true; // Set loading true when user changes
+      if (user && user.role === 'RECRUITER') {
+        console.log("Recruiter authenticated:", user.firstName, user.lastName, "ID:", user.id);
+        this.loadRecruiterJobs(user.id.toString());
+      } else {
+        console.log("No authenticated recruiter found or user is not a recruiter.");
+        this.jobs = []; // Clear jobs if no recruiter user
+        this.selectedJob = null;
+        this.applicants = [];
+        this.loading = false;
+        // Optionally show a message if needed, but avoid snackbar on initial load/logout
+        // if (user) { // Only show snackbar if there *was* a user but not recruiter
+        //   this.snackBar.open('User is not a recruiter.', 'Close', { duration: 3000 });
+        // }
+      }
+    });
+  }
 
-    // 1) load jobs posted by this recruiter
-    this.api.getJobsByRecruiter(user.id.toString()).subscribe({
+  private loadRecruiterJobs(recruiterId: string): void {
+    this.api.getJobsByRecruiter(recruiterId).subscribe({
       next: jobList => {
         // initialize applicantCount
         this.jobs = jobList.map(job => ({ ...job, applicantCount: 0 }));
         // 2) for each job, fetch its applications and count
+        // Consider doing this count on the backend if performance becomes an issue
         this.jobs.forEach(job =>
           this.api.getApplicationsByJobId(job.jobId.toString())
             .subscribe(apps => job.applicantCount = apps.length)
         );
+        this.loading = false; // Set loading false after jobs and counts are fetched
       },
       error: err => {
         console.error('Failed to load recruiter jobs', err);
         this.snackBar.open('Error loading jobs', 'Close', { duration: 3000 });
-      },
-      complete: () => this.loading = false
+        this.loading = false; // Ensure loading is false on error
+      }
+      // Removed complete callback as loading is handled in next/error
     });
   }
+
 
   startEdit(job: JobListing & { applicantCount: number }) {
     this.showAddForm = true;
@@ -254,9 +270,11 @@ export class RecruiterDashboardComponent implements OnInit {
   this.api.postJob(payload).subscribe({
     next: created => {
       this.snackBar.open('Job added!', 'Close', { duration: 3000 });
-      this.jobs.push({ ...created, applicantCount: 0 });
+      // Add the new job locally and fetch its applicant count (should be 0 initially)
+      const newJobWithCount = { ...created, applicantCount: 0 };
+      this.jobs = [...this.jobs, newJobWithCount]; // Use spread operator for immutability
       this.showAddForm = false;
-      this.ngOnInit(); // Consider using a more efficient way to refresh data
+      // No need to call ngOnInit() anymore
       this.resetNewJob();
     },
     error: err => {
@@ -282,9 +300,22 @@ updateJob(): void {
   };
   
   this.api.updateJob(payload).subscribe({
-    next: () => {
+    next: (updatedJob) => { // Assuming API returns the updated job
       this.snackBar.open('Job updated!', 'Close', { duration: 3000 });
-      this.ngOnInit();
+       // Find the index of the job to update
+       const index = this.jobs.findIndex(j => j.jobId === this.editingJobId);
+       if (index !== -1) {
+         // Preserve applicant count if possible, or refetch if necessary
+         const currentApplicantCount = this.jobs[index].applicantCount;
+         // Update the job in the local array
+         this.jobs[index] = { ...updatedJob, applicantCount: currentApplicantCount };
+         this.jobs = [...this.jobs]; // Trigger change detection if needed
+       } else {
+         // Fallback: reload all jobs if update logic is complex or API doesn't return updated job
+         const user = this.auth.currentUser;
+         if (user) this.loadRecruiterJobs(user.id.toString());
+       }
+      // No need to call ngOnInit() anymore
       this.cancelEdit();
     },
     error: err => {

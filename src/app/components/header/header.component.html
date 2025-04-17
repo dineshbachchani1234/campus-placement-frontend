@@ -1,1 +1,21 @@
-<p>header works!</p>
+<nav class="navbar">
+    <div class="navbar-brand">
+      <a routerLink="/">Campus Placement</a>
+    </div>
+    <div class="navbar-links">
+      <ul>
+        <li><a routerLink="/">Home</a></li>
+        <!-- Add other common links here -->
+  
+        <ng-container *ngIf="isLoggedIn; else loggedOutLinks">
+          <li><span>Welcome, {{ userName }}</span></li>
+          <li><button (click)="logout()" class="logout-button">Logout</button></li>
+        </ng-container>
+  
+        <ng-template #loggedOutLinks>
+          <li><a routerLink="/login">Login</a></li>
+          <li><a routerLink="/register">Register</a></li>
+        </ng-template>
+      </ul>
+    </div>
+  </nav>
