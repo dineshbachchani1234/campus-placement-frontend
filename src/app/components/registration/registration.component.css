@@ -1,36 +1,210 @@
-/* src/app/components/registration/registration.component.css */
-.registration-container {
+/* registration.component.css */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.register-card-wrapper {
+  width: 100%;
   max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+}
+
+.register-card {
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #3f51b5;
+  font-weight: 600;
+}
+
+.subtitle {
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.form-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.form-section h2 {
+  font-size: 1.2rem;
+  color: #3f51b5;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.name-fields {
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .name-fields {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
 .full-width {
   width: 100%;
 }
 
-.form-section {
-  margin-bottom: 20px;
+/* Password spacing */
+.password-spacer {
+  height: 24px; /* Add space between password fields */
 }
 
+/* Role Selector Styling */
 .role-selector {
-  margin: 15px 0;
+  margin-bottom: 2rem;
 }
 
-.role-selector mat-radio-button {
-  margin-right: 15px;
+.role-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
 }
 
-.form-actions {
+.role-options {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.role-option {
+  flex: 1;
+  min-width: 120px;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+/* This is the important fix for the selection state */
+.role-option.selected {
+  border-color: #3f51b5;
+  background-color: rgba(63, 81, 181, 0.05);
+}
+
+/* Make the entire box clickable */
+.role-option mat-radio-button {
+  width: 100%;
+  height: 100%;
+}
+
+.role-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-h3 {
+.role-content mat-icon {
+  font-size: 24px;
+  height: 24px;
+  width: 24px;
+}
+
+/* Fix for radio buttons */
+::ng-deep .role-option .mat-mdc-radio-button .mdc-radio {
+  display: none;
+}
+
+::ng-deep .role-option .mat-mdc-radio-button .mdc-form-field {
+  width: 100%;
+}
+
+/* Adjust for 3 roles */
+@media (min-width: 768px) {
+  .role-option {
+    flex: 1 0 calc(33.33% - 1rem);
+  }
+}
+
+@media (max-width: 767px) {
+  .role-options {
+    flex-direction: column;
+  }
+  
+  .role-option {
+    width: 100%;
+  }
+}
+
+/* Form actions */
+.form-actions {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.login-link {
+  margin-top: 1rem;
+  color: #666;
+}
+
+.login-link a {
   color: #3f51b5;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 5px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* SnackBar Styling */
+::ng-deep .success-snackbar {
+  background: #4caf50;
+  color: white;
+}
+
+::ng-deep .error-snackbar {
+  background: #f44336;
+  color: white;
+}
+
+/* Make mat-icon clickable for password visibility toggle */
+mat-form-field mat-icon {
+  cursor: pointer;
+}
+
+/* Hint text styling */
+::ng-deep .mat-mdc-form-field-hint {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.role-option:focus-within {
+  border-color: #3f51b5;
+  background-color: rgba(63, 81, 181, 0.05);
 }

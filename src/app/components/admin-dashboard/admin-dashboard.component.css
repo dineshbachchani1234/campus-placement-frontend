@@ -1,0 +1,28 @@
+.admin-card {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .event-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .event-form mat-form-field {
+    flex: 1 1 200px;
+  }
+  
+  .form-actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  table {
+    width: 100%;
+    margin-top: 2rem;
+  }
+  

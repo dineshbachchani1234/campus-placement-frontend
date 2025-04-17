@@ -209,7 +209,7 @@ carouselOptions: OwlOptions = {
             console.log("Missing company in job, setting default");
             interview.application.job.company = {
               companyId: 0,
-              name: 'Unknown Company',
+              companyName: 'Unknown Company',
               industry: 'Unknown'
             };
           }
@@ -238,7 +238,7 @@ carouselOptions: OwlOptions = {
             console.log("Missing company in job, setting default");
             application.job.company = {
               companyId: 0,
-              name: 'Unknown Company',
+              companyName: 'Unknown Company',
               industry: 'Unknown'
             };
           }

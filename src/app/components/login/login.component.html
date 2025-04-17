@@ -1,14 +1,21 @@
+<!-- login.component.html -->
 <div class="login-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Login</mat-card-title>
-    </mat-card-header>
+  <mat-card class="login-card">
+    <div class="login-header">
+      <div class="logo-container">
+        <!-- Replace with your actual logo path -->
+        <img src="assets/images/campus-logo.png" alt="Campus Recruitment Portal" class="logo" onerror="this.style.display='none'">
+      </div>
+      <h1 class="login-title">Campus Recruitment Portal</h1>
+      <h3 class="login-subtitle">Sign in to your account</h3>
+    </div>
     
-    <mat-card-content>
+    <mat-card-content class="login-content">
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline" class="full-width animated-element delay-1">
           <mat-label>Email</mat-label>
-          <input matInput formControlName="email" placeholder="Email" type="email">
+          <input matInput formControlName="email" placeholder="Enter your email" type="email">
+          <mat-icon matPrefix>email</mat-icon>
           <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
             Email is required
           </mat-error>
@@ -17,21 +24,35 @@
           </mat-error>
         </mat-form-field>
         
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline" class="full-width animated-element delay-2">
           <mat-label>Password</mat-label>
-          <input matInput formControlName="password" placeholder="Password" type="password">
+          <input matInput formControlName="password" placeholder="Enter your password" [type]="hidePassword ? 'password' : 'text'">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
           <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
             Password is required
           </mat-error>
         </mat-form-field>
         
-        <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">
-            Login
+        <div class="forgot-password animated-element delay-2">
+          <a routerLink="/forgot-password">Forgot password?</a>
+        </div>
+        
+        <div class="form-actions animated-element delay-3">
+          <button mat-raised-button color="primary" class="login-button" type="submit" [disabled]="loginForm.invalid">
+            <mat-icon>login</mat-icon> Sign In
           </button>
-          <button mat-button type="button" routerLink="/register">Don't have an account? Register</button>
+          <button mat-stroked-button routerLink="/register" class="register-button" type="button">
+            New user? Create an account
+          </button>
         </div>
       </form>
     </mat-card-content>
+    
+    <div class="login-footer">
+      © 2025 On-Campus Recruitment Portal - Northeastern University
+    </div>
   </mat-card>
 </div>

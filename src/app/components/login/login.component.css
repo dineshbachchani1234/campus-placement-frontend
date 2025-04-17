@@ -1,16 +1,122 @@
+/* login.component.css */
 .login-container {
-  max-width: 400px;
-  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.login-header {
+  background-color: #f5f5f5;
+  padding: 24px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.logo-container {
+  margin-bottom: 12px;
+}
+
+.logo {
+  max-height: 60px;
+  width: auto;
+}
+
+.login-title {
+  margin: 0;
+  color: #3f51b5;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.login-subtitle {
+  margin: 8px 0 0;
+  color: #666;
+  font-weight: normal;
+}
+
+.login-content {
+  padding: 24px;
+  background-color: white;
 }
 
 .full-width {
   width: 100%;
+  margin-bottom: 16px;
 }
 
 .form-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.login-button {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.register-button {
+  text-align: center;
+  font-size: 14px;
+}
+
+.forgot-password {
+  text-align: right;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
+.forgot-password a {
+  color: #3f51b5;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
+
+.login-footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 12px;
+  color: #666;
+  background-color: #f5f5f5;
+  border-top: 1px solid #eee;
+}
+
+/* Animation for form elements */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animated-element {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.1s;
+}
+
+.delay-2 {
+  animation-delay: 0.2s;
+}
+
+.delay-3 {
+  animation-delay: 0.3s;
 }
