@@ -163,6 +163,7 @@ export class RecruiterDashboardComponent implements OnInit {
 
     this.api.getApplicantsForJob(job.jobId.toString()).subscribe({
       next: (students) => {
+        console.log('RAW APPLICANTS RESPONSE', students);
         this.applicants = students;
         this.loadingApplicants = false;
       },
