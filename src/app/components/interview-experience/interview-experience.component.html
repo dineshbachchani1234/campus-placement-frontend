@@ -1,0 +1,53 @@
+<div class="experience-dialog">
+    <h2 mat-dialog-title>Share Your Interview Experience</h2>
+    
+    <mat-dialog-content>
+      <div class="interview-details">
+        <p><strong>Company:</strong> {{data.interview.application?.job?.company?.name || 'N/A'}}</p>
+        <p><strong>Position:</strong> {{data.interview.application?.job?.title || 'N/A'}}</p>
+        <p><strong>Interview Date:</strong> {{data.interview.interviewDate | date:'medium'}}</p>
+      </div>
+      
+      <form [formGroup]="experienceForm">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>How would you rate this interview? (1-5)</mat-label>
+          <mat-select formControlName="rating">
+            <mat-option [value]="1">1 - Poor</mat-option>
+            <mat-option [value]="2">2 - Fair</mat-option>
+            <mat-option [value]="3">3 - Good</mat-option>
+            <mat-option [value]="4">4 - Very Good</mat-option>
+            <mat-option [value]="5">5 - Excellent</mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('rating', 'required')">
+            Please select a rating
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Share your experience</mat-label>
+          <textarea 
+            matInput 
+            formControlName="comment" 
+            rows="6" 
+            placeholder="What questions were asked? How was the interviewer? Any tips for other students?"></textarea>
+          <mat-error *ngIf="hasError('comment', 'required')">
+            Please share your experience
+          </mat-error>
+          <mat-error *ngIf="hasError('comment', 'minlength')">
+            Please provide at least 10 characters
+          </mat-error>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    
+    <mat-dialog-actions>
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        [disabled]="experienceForm.invalid" 
+        (click)="onSubmit()">
+        Submit
+      </button>
+    </mat-dialog-actions>
+  </div>

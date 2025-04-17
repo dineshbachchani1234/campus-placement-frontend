@@ -8,6 +8,7 @@ import { JwtAuthResponse } from '../models/jwt-auth-response.model';
 import { CareerFair } from '../models/careerfair.model';
 import { Application, JobListing } from '../models/application.model';
 import { Interview } from '../models/interview.model';
+import { InterviewExperience } from '../models/interview-experience.model';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +72,10 @@ export class ApiService {
     return this.http.delete(`${this.baseUrl}/jobs/${jobId}`);
   }
 
+  withdrawApplication(applicationId: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/applications/${applicationId}`);
+  }
+
   // API call for submitting a job application (for candidates)
   postApplication(applicationData: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/applications`, applicationData);
@@ -121,6 +126,13 @@ export class ApiService {
   // Make sure you also have this method for getting interviews by student
   getInterviewsByStudent(studentId: string): Observable<Interview[]> {
     return this.http.get<Interview[]>(`${this.baseUrl}/interviews/student/${studentId}`);
+  }
+
+  addInterviewExperience(experienceData: InterviewExperience): Observable<InterviewExperience> {
+    return this.http.post<InterviewExperience>(
+      `${this.baseUrl}/interviews/experiences`, 
+      experienceData
+    );
   }
 
   getJobById(jobId: string): Observable<any> {

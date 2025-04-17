@@ -12,11 +12,17 @@ import { Interview, InterviewStatus, InterviewResult } from '../../models/interv
 import { JobType } from '../../models/job-listing.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { InterviewExperience } from '../../models/interview-experience.model';
+import { InterviewExperienceDialogComponent } from '../interview-experience/interview-experience.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, MatChipsModule, MatBadgeModule, MatButtonModule],
+  imports: [CommonModule, MatCardModule, 
+    MatTableModule, MatChipsModule, MatBadgeModule, 
+    MatButtonModule,
+    MatDialogModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -28,9 +34,9 @@ export class DashboardComponent implements OnInit {
 
   jobs: JobListing[] = [];
   displayedColumnsJobs: string[] = ['title', 'jobType', 'salary', 'action'];
+  displayedColumnsApplications: string[] = ['jobTitle', 'companyName', 'jobType', 'salary', 'status', 'applicationDate', 'deadline', 'actions'];
 
   // Update column definitions to match the data structure
-  displayedColumnsApplications: string[] = ['jobTitle', 'companyName', 'jobType', 'salary', 'status', 'applicationDate', 'deadline'];
   displayedColumnsInterviews: string[] = ['jobTitle', 'companyName', 'interviewDate', 'status', 'result', 'feedback', 'actions'];
   displayedColumnsCareerFairs: string[] = ['title', 'date', 'location', 'description'];
 
@@ -39,7 +45,9 @@ export class DashboardComponent implements OnInit {
   InterviewResult = InterviewResult;
   ApplicationStatus = ApplicationStatus;
 
-  constructor(private apiService: ApiService, private authService: AuthService, private snackBar: MatSnackBar) {}
+  constructor(private apiService: ApiService, private authService: AuthService, 
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.loadCareerFairs();
@@ -272,6 +280,121 @@ export class DashboardComponent implements OnInit {
       .map(word => word.charAt(0) + word.slice(1).toLowerCase())
       .join(' ');
   }
+
+  withdrawApplication(application: Application): void {
+    if (!application || !application.applicationId) {
+      this.snackBar.open('Cannot withdraw application: Invalid application', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return;
+    }
+    
+    // Confirm before withdrawing
+    if (confirm('Are you sure you want to withdraw this application?')) {
+      this.apiService.withdrawApplication(application.applicationId).subscribe({
+        next: () => {
+          console.log(`Withdrawn application ${application.applicationId}`);
+          
+          // Remove from the applications array
+          this.applications = this.applications.filter(app => app.applicationId !== application.applicationId);
+          
+          // Update job status if present in jobs array
+          const job = this.jobs.find(j => j.jobId === application.job.jobId);
+          if (job) {
+            job.hasApplied = false;
+          }
+          
+          // Show success notification
+          this.snackBar.open('Application withdrawn successfully', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+          });
+        },
+        error: err => {
+          console.error('Error withdrawing application:', err);
+          
+          // Show error notification
+          this.snackBar.open('Failed to withdraw application', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+          });
+        }
+      });
+    }
+  }
+
+  addInterviewExperience(interview: Interview): void {
+    if (!interview || !interview.interviewId) {
+      this.snackBar.open('Cannot add experience: Invalid interview data', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return;
+    }
+  
+    const dialogRef = this.dialog.open(InterviewExperienceDialogComponent, {
+      width: '550px',
+      data: { interview }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const user = this.authService.currentUser;
+        if (!user) {
+          this.snackBar.open('You must be logged in to share experiences', 'Close', {
+            duration: 3000
+          });
+          return;
+        }
+  
+        // Format the data according to your backend requirements
+        const experienceData: InterviewExperience = {
+          interview: {
+            interviewId: interview.interviewId
+          },
+          student: {
+            studentId: user.id
+          },
+          comment: result.comment,
+          rating: result.rating
+        };
+  
+        this.apiService.addInterviewExperience(experienceData).subscribe({
+          next: (response) => {
+            console.log('Interview experience added:', response);
+            
+            // Show success message
+            this.snackBar.open('Experience shared successfully! Thank you for helping others.', 'Close', {
+              duration: 5000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+            });
+          },
+          error: (err) => {
+            console.error('Error adding interview experience:', err);
+            
+            // Show error message
+            this.snackBar.open(
+              'Failed to share experience. Please try again later.', 
+              'Close', 
+              {
+                duration: 5000,
+                horizontalPosition: 'center',
+                verticalPosition: 'top',
+              }
+            );
+          }
+        });
+      }
+    });
+  }
+
+
 
 
 }
