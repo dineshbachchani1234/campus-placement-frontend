@@ -145,6 +145,27 @@ export class AdminDashboardComponent implements OnInit {
     );
   }
 
+  // Add selected company to the list
+  companySelected(event: MatAutocompleteSelectedEvent): void {
+    const selectedCompany = event.option.value as Company;
+    // Prevent adding duplicates if somehow possible
+    if (!this.selectedCompanies.some(c => 'companyId' in c && c.companyId === selectedCompany.companyId)) {
+      this.selectedCompanies.push(selectedCompany);
+    }
+    this.companyInput.nativeElement.value = '';
+    this.companyCtrl.setValue(null); // Reset the input control
+  }
+
+  // Remove company from the list
+  removeCompany(company: Company | { companyName: string }): void {
+    const index = this.selectedCompanies.indexOf(company);
+    if (index >= 0) {
+      this.selectedCompanies.splice(index, 1);
+    }
+    // Trigger autocomplete update after removal
+    this.companyCtrl.updateValueAndValidity();
+  }
+
   private loadAllEvents() {
     this.api.getAllEvents().subscribe(ev => this.events = ev);
   }
@@ -187,14 +208,31 @@ export class AdminDashboardComponent implements OnInit {
     };
     if (this.editing && v.eventId) {
       payload.eventId = v.eventId;
-      this.api.updateEvent(payload).subscribe(() => {
-        this.snack.open('Event updated', 'Close', { duration: 3000 });
-        this.cancel(); this.loadAllEvents();
+      this.api.updateEvent(payload).subscribe({
+        next: () => {
+          this.snack.open('Event updated successfully!', 'Close', { duration: 3000 });
+          this.cancel(); 
+          this.loadAllEvents();
+        },
+        error: (err) => {
+          console.error('Error updating event:', err);
+          this.snack.open(`Error updating event: ${err.message || 'Unknown error'}`, 'Close', { duration: 5000 });
+          // Optionally, keep the form populated for correction
+          // this.editing = true; // Ensure still in edit mode if needed
+        }
       });
     } else {
-      this.api.createEvent(payload).subscribe(() => {
-        this.snack.open('Event created', 'Close', { duration: 3000 });
-        this.cancel(); this.loadAllEvents();
+      // Add error handling for createEvent as well for consistency
+      this.api.createEvent(payload).subscribe({
+        next: () => {
+          this.snack.open('Event created successfully!', 'Close', { duration: 3000 });
+          this.cancel(); 
+          this.loadAllEvents();
+        },
+        error: (err) => {
+          console.error('Error creating event:', err);
+          this.snack.open(`Error creating event: ${err.message || 'Unknown error'}`, 'Close', { duration: 5000 });
+        }
       });
     }
   }

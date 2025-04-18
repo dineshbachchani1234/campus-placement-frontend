@@ -43,7 +43,7 @@
       <mat-form-field class="chip-list-field" appearance="outline">
         <mat-label>Participating Companies</mat-label>
         <mat-chip-grid #companyChipGrid aria-label="Company selection">
-          <mat-chip-row *ngFor="let company of selectedCompanies">
+          <mat-chip-row *ngFor="let company of selectedCompanies" (removed)="removeCompany(company)">
             {{ company.companyName }}
             <button matChipRemove>
               <mat-icon>cancel</mat-icon>
@@ -59,7 +59,7 @@
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
         />
         <mat-icon matSuffix color="primary">business</mat-icon>
-        <mat-autocomplete #autoCompany="matAutocomplete">
+        <mat-autocomplete #autoCompany="matAutocomplete" (optionSelected)="companySelected($event)">
            <mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
              {{ company.companyName }}
            </mat-option>
