@@ -213,7 +213,7 @@ export class RecruiterDashboardComponent implements OnInit {
 
     this.api.scheduleInterview(interviewData).subscribe({
       next: (interview) => {
-        this.snackBar.open(`Interview scheduled for ${this.showInterviewFormForApplicant?.firstName}`, 'Close', { duration: 3000 });
+        this.snackBar.open(`Interview scheduled for ${this.showInterviewFormForApplicant?.user.firstName}`, 'Close', { duration: 3000 });
         this.cancelScheduleInterview(); // Close form on success
         // Optionally: Update UI to reflect scheduled interview (e.g., disable button)
       },
@@ -299,7 +299,7 @@ updateJob(): void {
     isActive:    true,
     company:     { companyId: this.auth.currentUser!.id! }
   };
-  
+
   this.api.updateJob(payload).subscribe({
     next: (updatedJob) => { // Assuming API returns the updated job
       this.snackBar.open('Job updated!', 'Close', { duration: 3000 });
@@ -351,10 +351,10 @@ toggleAddForm(): void {
   if (this.editingJobId !== null) {
     this.cancelEdit();
   }
-  
+
   // Toggle the add form
   this.showAddForm = !this.showAddForm;
-  
+
   // If we're showing the form, reset it
   if (this.showAddForm) {
     this.resetNewJob();
