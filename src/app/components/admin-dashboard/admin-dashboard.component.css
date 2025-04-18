@@ -151,6 +151,7 @@
 
 .form-actions button[color="primary"] {
   background: var(--primary-gradient);
+  color: darkblue; /* Set text color to dark blue as requested */
   box-shadow: 0 4px 10px rgba(74, 111, 255, 0.4);
 }
 
@@ -436,3 +437,32 @@ barChartOptions: ChartOptions = {
   }
 }
 */
+
+/* Fixes for Admin Dashboard Styling Issues */
+
+/* Adjust chip list field for better chip/input visibility */
+.chip-list-field .mat-mdc-form-field-flex { /* Target inner container */
+  padding-top: 8px; /* Add some space above chips/input */
+  min-height: 60px; /* Ensure minimum height */
+  align-items: flex-start; /* Align items to the start */
+  box-sizing: border-box; /* Ensure padding is included in height */
+}
+
+.chip-list-field mat-chip-grid {
+  margin-bottom: 8px; /* Add space below chips */
+}
+
+.chip-list-field input {
+  margin-top: 4px; /* Add space above input */
+}
+
+
+/* Ensure form actions buttons are clearly visible */
+.form-actions {
+  margin-top: 2rem; /* Increase top margin for more separation */
+  padding-bottom: 1rem; /* Add padding below buttons */
+  clear: both; /* Ensure it clears any floats if flex wrap occurs */
+  position: relative; /* Help with potential stacking issues */
+  z-index: 1; /* Ensure it's above elements it might overlap */
+  width: 100%; /* Ensure it takes full width for clear:both */
+}
