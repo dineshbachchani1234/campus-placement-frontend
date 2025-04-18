@@ -14,6 +14,8 @@ import { Sponsor } from '../models/sponsor.model';
 import { CampusEvent } from '../models/campus-event.model';
 import { Skill } from '../models/skill.model';
 import { Certification } from '../models/certification.model';
+import { PlacementReport } from '../models/placement-report.model';
+import { College } from '../models/college.model';
 
 // Define a type for the event payload matching backend DTO structure
 type EventPayload = {
@@ -33,6 +35,8 @@ type EventPayload = {
 export class ApiService {
   // Update baseUrl to point to your Spring Boot backend
   private baseUrl = 'http://localhost:8080/api';
+
+  private collegeBaseUrl = 'http://localhost:8080/api/colleges';
 
   private applicationBaseUrl = 'http://localhost:8080/api/applications';
 
@@ -114,6 +118,10 @@ export class ApiService {
     return this.http.delete(`${this.baseUrl}/applications/${applicationId}`);
   }
 
+  getPlacementReports(): Observable<PlacementReport[]> {
+    return this.http.get<PlacementReport[]>(`${this.collegeBaseUrl}/placement-reports`);
+  }
+
   // API call for submitting a job application (for candidates)
   postApplication(applicationData: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/applications`, applicationData);
@@ -139,8 +147,8 @@ export class ApiService {
     // Assume userData contains an id field
     return this.http.put(`${this.baseUrl}/users/${userData.id}`, userData);
   }
-  getColleges(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/colleges`);
+  getColleges(): Observable<College[]> {
+    return this.http.get<College[]>(`${this.baseUrl}/colleges`);
   }
   
   // Company methods

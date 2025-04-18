@@ -131,3 +131,43 @@
       <tr mat-row        *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
   </mat-card>
+
+  <mat-divider class="my-4"></mat-divider>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Yearly Placement Trends</mat-card-title>
+      <mat-card-subtitle>Total placed students by year</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div style="display: block;">
+        <canvas
+          baseChart
+          [datasets]="barChartData"
+          [labels]="barChartLabels"
+          [options]="barChartOptions"
+          [chartType]="barChartType">
+        </canvas>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+  <!-- PIE CHART -->
+  <mat-card class="mt-4">
+    <mat-card-header>
+      <mat-card-title>Placement Share by College</mat-card-title>
+      <mat-card-subtitle>
+        Breakdown for {{ barChartLabels[barChartLabels.length - 1] || 'latest' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div style="display: block;">
+        <canvas
+          baseChart
+          [datasets]="pieChartDatasets"
+          [labels]="pieChartLabels"
+          [options]="pieChartOptions"
+          [chartType]="pieChartType">
+        </canvas>
+      </div>
+    </mat-card-content>
+  </mat-card>
