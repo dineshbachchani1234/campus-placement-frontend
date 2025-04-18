@@ -1,28 +1,438 @@
-.admin-card {
-    margin: 1rem;
+/* Enhanced Admin Dashboard Styles - Mind-blowing Edition */
+
+/* Base Styles & Dark Mode Theme */
+:root {
+  --primary-color: #4a6fff;
+  --primary-gradient: linear-gradient(135deg, #4a6fff 0%, #6e8fff 100%);
+  --accent-color: #ff6e91;
+  --accent-gradient: linear-gradient(135deg, #ff6e91 0%, #ff9eb6 100%);
+  --success-color: #2ecc71;
+  --warning-color: #f39c12;
+  --danger-color: #e74c3c;
+  --light-bg: #f9fafb;
+  --card-bg: #ffffff;
+  --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  --card-hover-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+  --text-primary: #333333;
+  --text-secondary: #707070;
+  --border-color: #e8e8e8;
+  --transition-speed: 0.3s;
+}
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--light-bg);
+  border-radius: 12px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card Styling with Glassmorphism */
+.admin-card, .chart-card {
+  border-radius: 16px;
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-speed) ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  margin-bottom: 2rem;
+}
+
+.admin-card:hover, .chart-card:hover {
+  box-shadow: var(--card-hover-shadow);
+  transform: translateY(-5px);
+}
+
+.admin-card::before, .chart-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--primary-gradient);
+  z-index: 1;
+}
+
+.chart-card::before {
+  background: var(--accent-gradient);
+}
+
+.admin-card mat-card-title, .chart-card mat-card-title {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.chart-card mat-card-title {
+  color: var(--accent-color);
+}
+
+/* Form Styling */
+.event-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.event-form mat-form-field {
+  flex: 1 1 250px;
+}
+
+.chip-list-field {
+  flex: 1 1 100% !important;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  height: 0;
+}
+
+/* Animated Input Focus Effect */
+::ng-deep .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: var(--primary-color) !important;
+  font-weight: 500;
+}
+
+::ng-deep .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline__leading,
+::ng-deep .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline__notch,
+::ng-deep .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline__trailing {
+  border-color: var(--primary-color) !important;
+  border-width: 2px !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Button & Action Styling */
+.form-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-actions button {
+  min-width: 140px;
+  border-radius: 28px;
+  padding: 0.5rem 1.5rem;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.form-actions button mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  line-height: 18px;
+}
+
+.form-actions button[color="primary"] {
+  background: var(--primary-gradient);
+  box-shadow: 0 4px 10px rgba(74, 111, 255, 0.4);
+}
+
+.form-actions button[color="primary"]:hover {
+  box-shadow: 0 6px 15px rgba(74, 111, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Table Styling */
+.events-table-container {
+  margin-top: 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.4rem;
+  color: var(--primary-color);
+  margin-bottom: 1.2rem;
+  font-weight: 500;
+}
+
+table {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.mat-mdc-header-row {
+  background-color: #f5f7ff;
+  height: 60px;
+}
+
+.mat-mdc-header-cell {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0 1rem;
+}
+
+.mat-mdc-row {
+  transition: background-color 0.15s ease;
+  height: 60px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mat-mdc-row:hover {
+  background-color: #f5f7ff;
+}
+
+.mat-mdc-row:nth-child(even) {
+  background-color: #fafbff;
+}
+
+.mat-mdc-cell {
+  padding: 0 1rem;
+  color: var(--text-primary);
+}
+
+.location-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+/* Charts Styling */
+.charts-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.chart-column {
+  flex: 1 1 100%;
+  min-height: 450px;
+}
+
+.chart-container {
+  position: relative;
+  height: 450px;
+  width: 100%;
+  margin: 1rem 0;
+  transition: all 0.5s ease;
+}
+
+.animate-chart {
+  animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Year filter styling */
+.year-filter-container {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.year-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.year-buttons button {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: #f5f7ff;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.year-buttons button:hover {
+  background: #e9eeff;
+  color: var(--primary-color);
+}
+
+.year-buttons button.active-range {
+  background: var(--accent-gradient);
+  color: white;
+  box-shadow: 0 3px 8px rgba(255, 110, 145, 0.4);
+}
+
+/* Divider Styling */
+.my-4 {
+  margin: 32px 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgba(74, 111, 255, 0.15), transparent);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-card, .chart-card {
+    margin: 1rem 0;
     padding: 1rem;
   }
   
-  .event-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  
-  .event-form mat-form-field {
-    flex: 1 1 200px;
-  }
-  
   .form-actions {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    flex-direction: column;
   }
   
-  table {
+  .form-actions button {
     width: 100%;
-    margin-top: 2rem;
   }
   
+  .chart-container {
+    height: 350px;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c2c9ff; 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}
+
+/* Glowing accent for chart */
+.chart-card mat-card-content {
+  position: relative;
+}
+
+.chart-card mat-card-content::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(255, 110, 145, 0.05) 0%, rgba(255, 110, 145, 0) 70%);
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(25px);
+  animation: pulse 5s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Enhanced tooltip styling */
+::ng-deep .mat-mdc-tooltip {
+  background-color: #333344;
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Fancy chart styles - need to be applied through chart options in TS */
+/* These are suggestions for chart styling options:
+barChartOptions: ChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top',
+      labels: {
+        padding: 20,
+        font: {
+          size: 14,
+          family: "'Roboto', sans-serif"
+        }
+      }
+    },
+    tooltip: {
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      titleColor: '#4a6fff',
+      bodyColor: '#333',
+      borderColor: 'rgba(74, 111, 255, 0.3)',
+      borderWidth: 1,
+      cornerRadius: 8,
+      boxPadding: 5,
+      usePointStyle: true
+    }
+  },
+  scales: {
+    x: {
+      grid: {
+        display: false
+      },
+      ticks: {
+        font: {
+          size: 12
+        }
+      }
+    },
+    y: {
+      grid: {
+        borderDash: [3, 3],
+        color: 'rgba(0, 0, 0, 0.05)'
+      },
+      ticks: {
+        font: {
+          size: 12
+        },
+        stepSize: 100
+      }
+    }
+  }
+}
+*/
