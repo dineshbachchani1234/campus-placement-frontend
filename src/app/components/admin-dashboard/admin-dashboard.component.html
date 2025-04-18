@@ -1,42 +1,51 @@
-<mat-card class="admin-card">
+<div class="dashboard-container">
+  <!-- Event Management Card -->
+  <mat-card class="admin-card">
     <mat-card-title>
+      <mat-icon color="primary">{{ editing ? 'edit' : 'event_note' }}</mat-icon>
       {{ editing ? 'Edit Event' : 'Create Event' }}
     </mat-card-title>
   
     <form [formGroup]="form" (ngSubmit)="save()" class="event-form">
       <!-- Title -->
-      <mat-form-field appearance="fill">
-        <mat-label>Title</mat-label>
-        <input matInput formControlName="title" />
+      <mat-form-field appearance="outline">
+        <mat-label>Event Title</mat-label>
+        <input matInput formControlName="title" placeholder="Enter event title" />
+        <mat-icon matSuffix color="primary">title</mat-icon>
+        <mat-error *ngIf="form.get('title')?.hasError('required')">Title is required</mat-error>
       </mat-form-field>
   
       <!-- Description -->
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description" rows="2"></textarea>
+        <textarea matInput formControlName="description" rows="3" placeholder="Enter event description"></textarea>
+        <mat-icon matSuffix color="primary">description</mat-icon>
       </mat-form-field>
   
       <!-- Date -->
-      <mat-form-field appearance="fill">
-        <mat-label>Date</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date" />
+      <mat-form-field appearance="outline">
+        <mat-label>Event Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" placeholder="MM/DD/YYYY" />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="form.get('date')?.hasError('required')">Date is required</mat-error>
       </mat-form-field>
   
       <!-- Location -->
-      <mat-form-field appearance="fill">
-        <mat-label>Location</mat-label>
-        <input matInput formControlName="location" />
+      <mat-form-field appearance="outline">
+        <mat-label>Event Location</mat-label>
+        <input matInput formControlName="location" placeholder="Enter event location" />
+        <mat-icon matSuffix color="primary">location_on</mat-icon>
+        <mat-error *ngIf="form.get('location')?.hasError('required')">Location is required</mat-error>
       </mat-form-field>
 
       <!-- Companies Chip Input with Autocomplete -->
-      <mat-form-field class="chip-list-field" appearance="fill">
+      <mat-form-field class="chip-list-field" appearance="outline">
         <mat-label>Participating Companies</mat-label>
         <mat-chip-grid #companyChipGrid aria-label="Company selection">
-          <mat-chip-row *ngFor="let company of selectedCompanies" (removed)="removeCompany(company)">
+          <mat-chip-row *ngFor="let company of selectedCompanies">
             {{ company.companyName }}
-            <button matChipRemove aria-label="'remove ' + company.name">
+            <button matChipRemove>
               <mat-icon>cancel</mat-icon>
             </button>
           </mat-chip-row>
@@ -48,9 +57,9 @@
           [matAutocomplete]="autoCompany"
           [matChipInputFor]="companyChipGrid"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addCompany($event)"
         />
-        <mat-autocomplete #autoCompany="matAutocomplete" (optionSelected)="selectedCompany($event)">
+        <mat-icon matSuffix color="primary">business</mat-icon>
+        <mat-autocomplete #autoCompany="matAutocomplete">
            <mat-option *ngFor="let company of filteredCompanies | async" [value]="company">
              {{ company.companyName }}
            </mat-option>
@@ -58,12 +67,12 @@
       </mat-form-field>
 
       <!-- Sponsors Chip Input with Autocomplete -->
-       <mat-form-field class="chip-list-field" appearance="fill">
+       <mat-form-field class="chip-list-field" appearance="outline">
          <mat-label>Sponsors</mat-label>
          <mat-chip-grid #sponsorChipGrid aria-label="Sponsor selection">
-           <mat-chip-row *ngFor="let sponsor of selectedSponsors" (removed)="removeSponsor(sponsor)">
+           <mat-chip-row *ngFor="let sponsor of selectedSponsors">
              {{ sponsor.name }}
-             <button matChipRemove aria-label="'remove ' + sponsor.name">
+             <button matChipRemove>
                <mat-icon>cancel</mat-icon>
              </button>
            </mat-chip-row>
@@ -75,9 +84,9 @@
            [matAutocomplete]="autoSponsor"
            [matChipInputFor]="sponsorChipGrid"
            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-           (matChipInputTokenEnd)="addSponsor($event)"
          />
-         <mat-autocomplete #autoSponsor="matAutocomplete" (optionSelected)="selectedSponsor($event)">
+         <mat-icon matSuffix color="primary">monetization_on</mat-icon>
+         <mat-autocomplete #autoSponsor="matAutocomplete">
             <mat-option *ngFor="let sponsor of filteredSponsors | async" [value]="sponsor">
               {{ sponsor.name }}
             </mat-option>
@@ -86,88 +95,91 @@
 
       <!-- Actions -->
       <div class="form-actions">
+        <button mat-button type="button" (click)="cancel()">
+          <mat-icon>close</mat-icon> Cancel
+        </button>
         <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+          <mat-icon>{{ editing ? 'save' : 'add' }}</mat-icon>
           {{ editing ? 'Save Changes' : 'Create Event' }}
         </button>
-        <button mat-button type="button" (click)="cancel()">Cancel</button>
       </div>
     </form>
   
     <mat-divider></mat-divider>
-  
-    <table mat-table [dataSource]="events" class="mat-elevation-z2">
-      <!-- Title -->
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let e">{{ e.title }}</td>
-      </ng-container>
-  
-      <!-- Date -->
-      <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef>Date</th>
-        <td mat-cell *matCellDef="let e">{{ e.date }}</td>
-      </ng-container>
-  
-      <!-- Location -->
-      <ng-container matColumnDef="location">
-        <th mat-header-cell *matHeaderCellDef>Location</th>
-        <td mat-cell *matCellDef="let e">{{ e.location }}</td>
-      </ng-container>
-  
-      <!-- Actions -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let e">
-          <button mat-icon-button color="accent" (click)="startEdit(e)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="delete(e)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-  
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row        *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+    
+    <!-- Event List Table -->
+    <div class="events-table-container">
+      <h2 class="section-title">
+        <mat-icon color="primary">event</mat-icon> Scheduled Events
+      </h2>
+      
+      <table mat-table [dataSource]="events" class="mat-elevation-z2">
+        <!-- Title -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Event Title</th>
+          <td mat-cell *matCellDef="let e">{{ e.title }}</td>
+        </ng-container>
+    
+        <!-- Date -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let e">{{ e.date | date:'mediumDate' }}</td>
+        </ng-container>
+    
+        <!-- Location -->
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef>Location</th>
+          <td mat-cell *matCellDef="let e">
+            <mat-icon color="primary" class="location-icon">location_on</mat-icon>
+            {{ e.location }}
+          </td>
+        </ng-container>
+    
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let e">
+            <button mat-icon-button color="primary" (click)="startEdit(e)" matTooltip="Edit Event">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="delete(e)" matTooltip="Delete Event">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
   </mat-card>
 
-  <mat-divider class="my-4"></mat-divider>
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Yearly Placement Trends</mat-card-title>
-      <mat-card-subtitle>Total placed students by year</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div style="display: block;">
-        <canvas
-          baseChart
-          [datasets]="barChartData"
-          [labels]="barChartLabels"
-          [options]="barChartOptions"
-          [chartType]="barChartType">
-        </canvas>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  
-  <!-- PIE CHART -->
-  <mat-card class="mt-4">
-    <mat-card-header>
-      <mat-card-title>Placement Share by College</mat-card-title>
-      <mat-card-subtitle>
-        Breakdown for {{ barChartLabels[barChartLabels.length - 1] || 'latest' }}
-      </mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div style="display: block;">
-        <canvas
-          baseChart
-          [datasets]="pieChartDatasets"
-          [labels]="pieChartLabels"
-          [options]="pieChartOptions"
-          [chartType]="pieChartType">
-        </canvas>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <div class="my-4"></div>
+
+  <!-- Charts Section -->
+  <div class="charts-row">
+    <!-- Bar Chart Card -->
+    <div class="chart-column">
+      <mat-card class="chart-card animate-chart">
+        <mat-card-header>
+          <mat-icon color="primary" mat-card-avatar>bar_chart</mat-icon>
+          <mat-card-title>Yearly Placement Trends</mat-card-title>
+          <mat-card-subtitle>Total placed students by year</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas
+              baseChart
+              [datasets]="barChartData"
+              [options]="barChartOptions"
+              [labels]="barChartLabels"
+              [type]="barChartType">
+            </canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+
+  </div>
+</div>
